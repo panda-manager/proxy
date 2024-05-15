@@ -28,11 +28,17 @@ export const OTP_MAIL_ACCOUNT = {
 export const BACKEND_URL_1 = 'https://back1.panda.com';
 export const BACKEND_URL_2 = 'https://back2.panda.com';
 
-export const REDIS_URL = process.env.REDIS_URL;
+export const REDIS_CONFIG = {
+  HOST: process.env.REDIS_HOST,
+  PORT: parseInt(process.env.REDIS_PORT),
+  USER: process.env.REDIS_USER,
+  PASS: process.env.REDIS_PASSWORD,
+  URL: process.env.REDIS_URL,
+};
 
 export default () => ({
   CORS_HANDLER,
-  REDIS_URL,
+  REDIS_CONFIG,
   OTP_MAIL_ACCOUNT,
   APP_URL,
   APP_PORT,
