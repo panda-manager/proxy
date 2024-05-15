@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { createClient } from 'redis';
 
 @Module({
@@ -14,6 +14,11 @@ import { createClient } from 'redis';
       provide: 'REDIS_CLIENT',
       useFactory: async (options: { url: string }) => {
         const client = createClient(options);
+
+        client.on('error', (err) => {
+          Logger.error('Redis error: ', err);
+        });
+
         await client.connect();
         return client;
       },

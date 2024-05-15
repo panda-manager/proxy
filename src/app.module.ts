@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import environments from './environments';
+import { RedisModule } from './config';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import environments from './environments';
       isGlobal: true,
       load: [environments],
     }),
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],
