@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import environments, { REDIS_CONFIG } from './environments';
+import { CredentialsController } from './modules/credentials/credentials.controller';
+import { AuthController } from './auth/auth.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
@@ -13,7 +15,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     }),
     ClientsModule.register([
       {
-        name: 'REDIS_SERVICE',
+        name: 'REDIS_CLIENT',
         transport: Transport.REDIS,
         options: {
           host: REDIS_CONFIG.HOST,
@@ -24,9 +26,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     ]),
   ],
-  controllers: [AppController],
+  controllers: [AppController, CredentialsController, AuthController],
   providers: [AppService],
 })
-export class AppModule {
-  constructor() {}
-}
+export class AppModule {}
