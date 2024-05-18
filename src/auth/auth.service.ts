@@ -1,6 +1,5 @@
 import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserEntity } from '../modules/user/entity/user.entity';
 import { BasicAuthLoginDTO } from './dto/basic_auth_login.dto';
 import { UserService } from '../modules/user/user.service';
 import { Request } from 'express';
