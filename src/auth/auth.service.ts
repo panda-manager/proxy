@@ -16,7 +16,10 @@ export class AuthService {
     private readonly user_service: UserService,
     private readonly otp_service: OTPService,
   ) {}
-  async login(req: Request, user: BasicAuthLoginDTO): Promise<AccessTokenResponseDTO> {
+  async login(
+    req: Request,
+    user: BasicAuthLoginDTO,
+  ): Promise<AccessTokenResponseDTO> {
     throw new NotImplementedException();
   }
 

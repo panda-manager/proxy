@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotImplementedException,
-} from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { configDotenv } from 'dotenv';
