@@ -25,8 +25,8 @@ export const OTP_MAIL_ACCOUNT = {
   PASS: process.env.OTP_MAIL_PASSWORD,
 };
 
-export const BACKEND_URL_1 = 'https://back1.panda.com';
-export const BACKEND_URL_2 = 'https://back2.panda.com';
+export const BACKEND_URL_1 = 'http://localhost:8080';
+export const BACKEND_URL_2 = '';
 
 export const REDIS_CONFIG = {
   HOST: process.env.REDIS_HOST,

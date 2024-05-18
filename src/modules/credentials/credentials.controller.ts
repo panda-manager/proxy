@@ -64,6 +64,23 @@ export class CredentialsController {
   }
 
   @ApiBearerAuth()
+  // @UseGuards(AuthGuard('jwt'))
+  @ApiOkResponse({
+    status: HttpStatus.OK,
+    type: [AppDisplayedCredentialsDTO],
+  })
+  @ApiQuery({
+    name: 'host',
+    type: String,
+    required: false,
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get()
+  get_all(@Req() req: Request): Promise<AppDisplayedCredentialsDTO[]> {
+    return this.credentials_service.get_app_displayed_credentials(req);
+  }
+
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({
     status: HttpStatus.OK,
@@ -76,26 +93,6 @@ export class CredentialsController {
     @Body() get_password_dto: GetPasswordDTO,
   ): Promise<string> {
     return this.credentials_service.get_password(req, get_password_dto);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOkResponse({
-    status: HttpStatus.OK,
-    type: [AppDisplayedCredentialsDTO],
-  })
-  @ApiQuery({
-    name: 'host',
-    type: String,
-    required: false,
-  })
-  @HttpCode(HttpStatus.OK)
-  @Get()
-  get_all(
-    @Req() req: Request,
-    @Query('host') host?: string,
-  ): Promise<AppDisplayedCredentialsDTO[]> {
-    return this.credentials_service.get_app_displayed_credentials(req, host);
   }
 
   @ApiBearerAuth()

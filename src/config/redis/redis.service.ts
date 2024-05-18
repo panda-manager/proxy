@@ -1,14 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
-export class RedisService {
+export class RedisService implements OnModuleInit {
+  private readonly logger = new Logger(RedisService.name);
   constructor(
     @Inject('REDIS_CLIENT') private readonly redis_client: ClientProxy,
   ) {}
 
-  connect(): Promise<void> {
-    return this.redis_client.connect();
+  onModuleInit() {
+    this.redis_client
+      .connect()
+      .then(() => this.logger.log('Redis client connected!'));
   }
 
   async key_exists(key: string): Promise<boolean> {
@@ -19,21 +22,13 @@ export class RedisService {
     });
   }
 
-  async get_key(key: string): Promise<any | null> {
-    return new Promise<any | null>((resolve, reject) => {
-      this.redis_client.send('get', key).subscribe((result: string | null) => {
-        resolve(JSON.parse(result));
-      }, reject);
-    });
+  async get_key(key: string) {
+    return this.redis_client.emit('get', key).toPromise();
   }
 
-  async insert_key(key: string, value: any): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
-      const serializedValue = JSON.stringify(value);
-      this.redis_client.send('set', [key, serializedValue]).subscribe(() => {
-        resolve(true);
-      }, reject);
-    });
+  async insert_key(key: string, value: any) {
+    const serializedValue = JSON.stringify(value);
+    return this.redis_client.emit('set', { [key]: serializedValue }).toPromise();
   }
 
   async delete_key(key: string): Promise<number> {

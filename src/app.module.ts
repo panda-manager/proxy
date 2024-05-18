@@ -3,8 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import environments from './environments';
-import { CredentialsController } from './modules/credentials/credentials.controller';
-import { AuthController } from './auth/auth.controller';
+import { AuthModule } from './auth/auth.module';
+import { CredentialsModule } from './modules/credentials/credentials.module';
 
 @Module({
   imports: [
@@ -12,8 +12,10 @@ import { AuthController } from './auth/auth.controller';
       isGlobal: true,
       load: [environments],
     }),
+    CredentialsModule,
+    AuthModule,
   ],
-  controllers: [AppController, CredentialsController, AuthController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

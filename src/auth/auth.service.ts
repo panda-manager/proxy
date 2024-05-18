@@ -1,5 +1,4 @@
 import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { BasicAuthLoginDTO } from './dto/basic_auth_login.dto';
 import { UserService } from '../modules/user/user.service';
 import { Request } from 'express';
@@ -12,7 +11,6 @@ import { AccessTokenResponseDTO } from './dto/access_token_response.dto';
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   constructor(
-    private readonly jwt_service: JwtService,
     private readonly user_service: UserService,
     private readonly otp_service: OTPService,
   ) {}

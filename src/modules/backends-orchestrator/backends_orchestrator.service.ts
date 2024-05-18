@@ -14,9 +14,7 @@ export class BackendsOrchestratorService {
     private readonly backend_reg_1_service: BackendReg1Service,
     private readonly backend_reg_2_service: BackendReg2Service,
     private readonly redis_service: RedisService,
-  ) {
-    redis_service.connect().then(() => this.logger.log('Redis connected!'));
-  }
+  ) {}
 
   conclude_handler(reg: RegionNumber): BaseBackendService {
     switch (reg) {
@@ -27,8 +25,8 @@ export class BackendsOrchestratorService {
     }
   }
 
-  async redirect_request(req: Request, reg: RegionNumber) {
-    const pair_redis_key = req.headers['X-PAIR-REDIS-KEY'] as string;
+  async redirect_request(req: Request, reg?: RegionNumber): Promise<any> {
+    const pair_redis_key = req.headers['x-pair-redis-key'] as string;
     const found = await this.redis_service.get_key(pair_redis_key);
 
     if (!found && (!reg || reg < 1 || reg > this.reg_amount))

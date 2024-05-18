@@ -7,12 +7,16 @@ import { UpdateCredentialsDTO } from './dto/update_credentials.dto';
 import { DeleteCredentialsDTO } from './dto/delete_credentials.dto';
 import { GetPasswordDTO } from './dto/get_password.dto';
 import { ResponseDTO } from '../../common';
+import { BackendsOrchestratorService } from '../backends-orchestrator/backends_orchestrator.service';
 
 @Injectable()
 export class CredentialsService {
   private readonly logger = new Logger(CredentialsService.name);
 
-  constructor(private readonly auth_service: AuthService) {}
+  constructor(
+    private readonly auth_service: AuthService,
+    private readonly backends_orchestrator_service: BackendsOrchestratorService,
+  ) {}
 
   async insert(
     req: Request,
@@ -30,9 +34,8 @@ export class CredentialsService {
 
   async get_app_displayed_credentials(
     req: Request,
-    host?: string,
   ): Promise<AppDisplayedCredentialsDTO[]> {
-    throw new NotImplementedException();
+    return this.backends_orchestrator_service.redirect_request(req);
   }
 
   async get_password(
