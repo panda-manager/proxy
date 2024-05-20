@@ -8,6 +8,8 @@ import { map } from 'rxjs';
 export abstract class BaseBackendService {
   constructor(protected readonly http_service: HttpService) {}
   async redirect_request(req: Request): Promise<any> {
+    const existing_xff = req.headers['X-Forwarded-For'] as string;
+
     const config: AxiosRequestConfig = {
       method: req.method,
       url: req.url,
@@ -17,9 +19,9 @@ export abstract class BaseBackendService {
       headers: {
         ...req.headers,
         host: 'panda-manager-proxy.io', //TODO
-        ['X-Forwarded-For']: !req.headers['X-Forwarded-For']
+        ['X-Forwarded-For']: !existing_xff
           ? req.ip
-          : `${req.headers['X-Forwarded-For']}, ${req.ip}`,
+          : `${existing_xff}, ${req.ip}`,
       },
     };
 
