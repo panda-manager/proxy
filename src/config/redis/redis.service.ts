@@ -20,7 +20,11 @@ export class RedisService {
 
   async insert_key(key: string, value: any) {
     const serializedValue = JSON.stringify(value);
-    return this.redis_client.set(key, serializedValue, 'EX', 60);
+
+    const res = this.redis_client.set(key, serializedValue);
+    await this.redis_client.expire(key, 60);
+
+    return res;
   }
 
   async delete_key(key: string): Promise<number> {
