@@ -3,9 +3,8 @@ import { BackendReg1Service } from './backends/backend-reg-1/backend_reg_1.servi
 import { BackendReg2Service } from './backends/backend-reg-2/backend_reg_2.service';
 import { Request } from 'express';
 import { BaseBackendService } from './backends/base_backend.service';
-import { RedisService } from '../../config/redis/redis.service';
+import { RedisService, TRedisDocument } from '../../config/redis/redis.service';
 import { PAIR_UUID_HEADER } from '../../common';
-import { TRedisObject } from '../../../dist/src/config/redis/redis.service';
 
 export type RegionNumber = number;
 @Injectable()
@@ -44,7 +43,7 @@ export class BackendsOrchestratorService {
         method: req.method,
         params: req.params,
         body: req.body,
-      } as TRedisObject);
+      } as TRedisDocument);
     else await this.redis_service.delete_key(pair_redis_key);
     return res;
   }

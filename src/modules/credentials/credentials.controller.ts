@@ -1,23 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Put,
-  Query,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { ResponseDTO } from '../../common';
@@ -45,7 +27,7 @@ export class CredentialsController {
     @Req() req: Request,
     @Body() create_dto: CreateCredentialsDTO,
   ): Promise<ResponseDTO> {
-    return this.credentials_service.insert(req, create_dto);
+    return this.credentials_service.insert(req);
   }
 
   @ApiBearerAuth()
@@ -60,7 +42,7 @@ export class CredentialsController {
     @Req() req: Request,
     @Body() update_dto: UpdateCredentialsDTO,
   ): Promise<ResponseDTO> {
-    return this.credentials_service.update(req, update_dto);
+    return this.credentials_service.update(req);
   }
 
   @ApiBearerAuth()
@@ -92,7 +74,7 @@ export class CredentialsController {
     @Req() req: Request,
     @Body() get_password_dto: GetPasswordDTO,
   ): Promise<string> {
-    return this.credentials_service.get_password(req, get_password_dto);
+    return this.credentials_service.get_password(req);
   }
 
   @ApiBearerAuth()
@@ -107,7 +89,7 @@ export class CredentialsController {
     @Req() req: Request,
     @Body() delete_dto: DeleteCredentialsDTO,
   ): Promise<ResponseDTO> {
-    return this.credentials_service.remove(req, delete_dto);
+    return this.credentials_service.remove(req);
   }
 
   @ApiBearerAuth()
@@ -127,6 +109,6 @@ export class CredentialsController {
     @Req() req: Request,
     @Query('host') host: string,
   ): Promise<ResponseDTO> {
-    return this.credentials_service.has_any(req, host);
+    return this.credentials_service.has_any(req);
   }
 }
