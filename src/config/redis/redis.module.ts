@@ -1,24 +1,30 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { REDIS_CONFIG } from '../../environments';
+import { createClient } from 'redis';
 import { RedisService } from './redis.service';
+import { REDIS_CONFIG } from '../../environments';
 
 @Module({
-  imports: [
-    ClientsModule.register([
-      {
-        name: 'REDIS_CLIENT',
-        transport: Transport.REDIS,
-        options: {
-          host: REDIS_CONFIG.HOST,
-          port: REDIS_CONFIG.PORT,
-          username: REDIS_CONFIG.USER,
-          password: REDIS_CONFIG.PASS,
-        },
+  providers: [
+    {
+      provide: 'REDIS_OPTIONS',
+      useValue: {
+        host: REDIS_CONFIG.HOST,
+        port: REDIS_CONFIG.PORT,
+        username: REDIS_CONFIG.USER,
+        password: REDIS_CONFIG.PASS,
       },
-    ]),
+    },
+    {
+      inject: ['REDIS_OPTIONS'],
+      provide: 'REDIS_CLIENT',
+      useFactory: async (options) => {
+        const client = createClient(options);
+        await client.connect();
+        return client;
+      },
+    },
+    RedisService,
   ],
-  providers: [RedisService],
   exports: [RedisService],
 })
 export class RedisModule {}

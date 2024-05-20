@@ -26,7 +26,7 @@ export const OTP_MAIL_ACCOUNT = {
 };
 
 export const BACKEND_URL_1 = 'http://localhost:8080';
-export const BACKEND_URL_2 = '';
+export const BACKEND_URL_2 = 'http://localhost:8080';
 
 export const REDIS_CONFIG = {
   HOST: process.env.REDIS_HOST,
