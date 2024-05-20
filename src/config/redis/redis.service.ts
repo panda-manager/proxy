@@ -1,6 +1,18 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Redis } from 'ioredis';
 
+type QueryParams = {
+  [key: string]: string;
+};
+
+export type TRedisDocument = {
+  reg: number;
+  uri: string;
+  method: string;
+  params: QueryParams;
+  body: JSON;
+};
+
 @Injectable()
 export class RedisService {
   private readonly logger = new Logger(RedisService.name);
@@ -15,10 +27,11 @@ export class RedisService {
   }
 
   async get_key(key: string) {
-    return this.redis_client.get(key);
+    const value = await this.redis_client.get(key);
+    return JSON.parse(value) as TRedisDocument;
   }
 
-  async insert_key(key: string, value: any) {
+  async insert_key(key: string, value: TRedisDocument) {
     const serializedValue = JSON.stringify(value);
 
     const res = this.redis_client.set(key, serializedValue);

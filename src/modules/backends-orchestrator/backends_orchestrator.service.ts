@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { BaseBackendService } from './backends/base_backend.service';
 import { RedisService } from '../../config/redis/redis.service';
 import { PAIR_UUID_HEADER } from '../../common';
+import { TRedisObject } from '../../../dist/src/config/redis/redis.service';
 
 export type RegionNumber = number;
 @Injectable()
@@ -32,14 +33,18 @@ export class BackendsOrchestratorService {
 
     if (!found && (!reg || reg < 1 || reg > this.reg_amount))
       reg = Math.random() < 0.5 ? 1 : 2;
-    else if (found) reg = found == '1' ? 2 : 1;
+    else if (found) reg = found.reg == 1 ? 2 : 1;
 
     const res = this.conclude_handler(reg).redirect_request(req);
 
     if (!found)
       await this.redis_service.insert_key(pair_redis_key, {
         reg,
-      });
+        uri: req.url,
+        method: req.method,
+        params: req.params,
+        body: req.body,
+      } as TRedisObject);
     else await this.redis_service.delete_key(pair_redis_key);
     return res;
   }
