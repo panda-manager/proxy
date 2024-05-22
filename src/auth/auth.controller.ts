@@ -1,21 +1,9 @@
 import { AuthService } from './auth.service';
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { BasicAuthLoginDTO } from './dto/basic_auth_login.dto';
 import { CreateUserDTO } from '../modules/user/dto/create_user.dto';
 import { Request } from 'express';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { AccessTokenResponseDTO } from './dto/access_token_response.dto';
 import { ResponseDTO } from '../common';
 import { AuthGuard } from '@nestjs/passport';
@@ -55,7 +43,7 @@ export class AuthController {
     type: ResponseDTO,
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('custom'))
   @HttpCode(HttpStatus.OK)
   @Post('/validate/master')
   async validate_master_password(

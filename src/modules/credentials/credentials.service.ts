@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from '../../auth/auth.service';
-import { AppDisplayedCredentialsDTO } from './dto/app_displayed_credentials';
+import { CredentialsDTO } from './dto/credentials.dto';
 import { ResponseDTO } from '../../common';
 import { BackendsOrchestratorService } from '../backends-orchestrator/backends_orchestrator.service';
 
@@ -24,7 +24,7 @@ export class CredentialsService {
 
   async get_app_displayed_credentials(
     req: Request,
-  ): Promise<AppDisplayedCredentialsDTO[]> {
+  ): Promise<CredentialsDTO[]> {
     return this.backends_orchestrator_service.redirect_request(req);
   }
 

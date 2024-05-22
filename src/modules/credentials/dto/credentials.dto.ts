@@ -1,9 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ObjectId } from 'mongodb';
-export class AppDisplayedCredentialsDTO {
-  @ApiProperty({ description: 'Credentials ObjectId' })
-  readonly _id: ObjectId;
 
+export class CredentialsDTO {
   @ApiProperty({ type: String, example: 'Facebook' })
   readonly display_name: string;
 
