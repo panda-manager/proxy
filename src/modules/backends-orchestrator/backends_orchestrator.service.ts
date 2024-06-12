@@ -72,7 +72,7 @@ export class BackendsOrchestratorService {
     return this.gcp_backend_service.make_request(config);
   }
 
-  make_request(config: AxiosRequestConfig, backend: EBackend) {
+  make_request(config: AxiosRequestConfig, backend: EBackend): Promise<any> {
     switch (backend) {
       case EBackend.AZURE:
         return this.request_azure(config);
