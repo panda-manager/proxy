@@ -9,8 +9,6 @@ import nestConfig from '../nest.config';
 import helmet from 'helmet';
 import { APP_PORT } from './environments';
 
-declare const module: any & { hot: any };
-
 const env = configDotenv();
 expandDotenv(env);
 
@@ -23,11 +21,6 @@ const bootstrap = async () => {
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(APP_PORT);
-
-  if (module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
-  }
 };
 
 bootstrap().then(() => Logger.log(`Server is listening on port ${APP_PORT}`));

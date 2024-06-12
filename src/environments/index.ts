@@ -25,8 +25,8 @@ export const OTP_MAIL_ACCOUNT = {
   PASS: process.env.OTP_MAIL_PASSWORD,
 };
 
-export const BACKEND_URL_1 = 'http://localhost:8080';
-export const BACKEND_URL_2 = 'http://localhost:8080';
+export const AZURE_BACKEND_URL = process.env.AZURE_BACKEND_URL;
+export const GCP_BACKEND_URL = process.env.GCP_BACKEND_URL;
 
 export const REDIS_CONFIG = {
   HOST: process.env.REDIS_HOST,
@@ -43,6 +43,6 @@ export default () => ({
   APP_URL,
   APP_PORT,
   NODE_ENV,
-  BACKEND_URL_1,
-  BACKEND_URL_2,
+  AZURE_BACKEND_URL,
+  GCP_BACKEND_URL,
 });

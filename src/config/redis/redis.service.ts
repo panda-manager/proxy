@@ -1,12 +1,13 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Redis } from 'ioredis';
+import { EBackend } from '../../common';
 
 type QueryParams = {
   [key: string]: string;
 };
 
 export type TRedisDocument = {
-  reg: number;
+  reg: EBackend;
   uri: string;
   method: string;
   params: QueryParams;

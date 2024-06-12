@@ -3,17 +3,21 @@ import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { AxiosRequestConfig } from 'axios';
 import { map } from 'rxjs';
+import { BackendUrl, EBackend } from '../../../common';
 
 @Injectable()
 export abstract class BaseBackendService {
-  constructor(protected readonly http_service: HttpService) {}
+  protected constructor(
+    protected readonly http_service: HttpService,
+    protected readonly identifier: EBackend,
+  ) {}
   async redirect_request(req: Request): Promise<any> {
     const existing_xff = req.headers['X-Forwarded-For'] as string;
 
     const config: AxiosRequestConfig = {
       method: req.method,
       url: req.url,
-      baseURL: this.get_base_url(),
+      baseURL: BackendUrl[this.identifier],
       data: req.body,
       params: req.params,
       headers: {
@@ -29,5 +33,8 @@ export abstract class BaseBackendService {
       .request(config)
       .pipe(map((response) => response.data));
   }
-  protected abstract get_base_url(): string;
+
+  which(): EBackend {
+    return this.identifier;
+  }
 }

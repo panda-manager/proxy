@@ -55,7 +55,7 @@ export class AuthController {
     type: ResponseDTO,
   })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('custom'))
   @HttpCode(HttpStatus.OK)
   @Post('/validate/master')
   async validate_master_password(
