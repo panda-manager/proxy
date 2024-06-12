@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { EBackend, HttpMethod, QueryParams } from '../../common';
 
@@ -12,7 +12,6 @@ export type TRedisDocument = {
 
 @Injectable()
 export class RedisService {
-  private readonly logger = new Logger(RedisService.name);
   constructor(@Inject('REDIS_CLIENT') private readonly redis_client: Redis) {}
 
   async key_exists(key: string): Promise<boolean> {
