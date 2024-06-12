@@ -34,7 +34,8 @@ export class BackendsOrchestratorService {
     if (!found && !backend)
       backend = Math.random() < 0.5 ? EBackend.AZURE : EBackend.GCP;
     else if (found)
-      backend = found.backend === EBackend.AZURE ? EBackend.GCP : EBackend.AZURE;
+      backend =
+        found.backend === EBackend.AZURE ? EBackend.GCP : EBackend.AZURE;
 
     const handler: BaseBackendService = this.conclude_handler(backend);
     const info: TRedisDocument = {
