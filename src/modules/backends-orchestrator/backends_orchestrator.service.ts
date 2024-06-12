@@ -4,7 +4,8 @@ import { GCPBackendService } from './backends/gcp-backend/gcp_backend.service';
 import { Request } from 'express';
 import { BaseBackendService } from './backends/base_backend.service';
 import { RedisService, TRedisDocument } from '../../config/redis/redis.service';
-import { EBackend, PAIR_UUID_HEADER } from '../../common';
+import { EBackend, HttpMethod, PAIR_UUID_HEADER } from '../../common';
+import { RevertsService } from './backends/reverts/reverts.service';
 
 export type RegionNumber = number;
 @Injectable()
@@ -13,6 +14,7 @@ export class BackendsOrchestratorService {
   constructor(
     private readonly azure_backend_service: AzureBackendService,
     private readonly gcp_backend_service: GCPBackendService,
+    private readonly reverts_service: RevertsService,
     private readonly redis_service: RedisService,
   ) {}
 
@@ -29,26 +31,34 @@ export class BackendsOrchestratorService {
     const pair_redis_key = req.headers[PAIR_UUID_HEADER] as string;
     const found = await this.redis_service.get_key(pair_redis_key);
 
-    if (!found && !reg) reg = Math.random() < 0.5 ? EBackend.AZURE : EBackend.GCP;
+    if (!found && !reg)
+      reg = Math.random() < 0.5 ? EBackend.AZURE : EBackend.GCP;
     else if (found)
-      reg = found.reg == EBackend.AZURE ? EBackend.GCP : EBackend.AZURE;
+      reg = found.reg === EBackend.AZURE ? EBackend.GCP : EBackend.AZURE;
 
     const handler: BaseBackendService = this.conclude_handler(reg);
+    const info: TRedisDocument = {
+      reg,
+      uri: req.url,
+      method: req.method as HttpMethod,
+      params: req.params,
+      body: req.body,
+    };
 
     this.logger.log(
       `Redirecting ${req.method} ${req.url} to ${EBackend[handler.which()]}`,
     );
-    const res = handler.redirect_request(req);
 
-    if (!found)
-      await this.redis_service.insert_key(pair_redis_key, {
-        reg,
-        uri: req.url,
-        method: req.method,
-        params: req.params,
-        body: req.body,
-      } as TRedisDocument);
-    else await this.redis_service.delete_key(pair_redis_key);
-    return res;
+    try {
+      const res = handler.redirect_request(req);
+
+      if (!found) await this.redis_service.insert_key(pair_redis_key, info);
+      else await this.redis_service.delete_key(pair_redis_key);
+
+      return res;
+    } catch (e: unknown) {
+      await this.reverts_service.revert(info);
+      throw e;
+    }
   }
 }

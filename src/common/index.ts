@@ -15,5 +15,10 @@ export const BackendUrl: TBackendUrl = {
   [EBackend.GCP]: GCP_BACKEND_URL,
 };
 
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+
 export * from './responses/response.dto';
 export * from './responses/error_response.dto';
+export type QueryParams = {
+  [key: string]: string;
+};
