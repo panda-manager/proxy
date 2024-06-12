@@ -1,13 +1,25 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { ResponseDTO } from '../../common';
-import { GetPasswordDTO } from './dto/get_password.dto';
 import { CredentialsDTO } from './dto/credentials.dto';
-import { DeleteCredentialsDTO } from './dto/delete_credentials.dto';
-import { CreateCredentialsDTO } from './dto/create_credentials.dto';
-import { UpdateCredentialsDTO } from './dto/update_credentials.dto';
 import { CredentialsService } from './credentials.service';
 
 @ApiTags('Credentials')
@@ -23,10 +35,7 @@ export class CredentialsController {
   })
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  insert(
-    @Req() req: Request,
-    @Body() create_dto: CreateCredentialsDTO,
-  ): Promise<ResponseDTO> {
+  insert(@Req() req: Request): Promise<ResponseDTO> {
     return this.credentials_service.insert(req);
   }
 
@@ -36,10 +45,7 @@ export class CredentialsController {
   })
   @HttpCode(HttpStatus.OK)
   @Put()
-  update(
-    @Req() req: Request,
-    @Body() update_dto: UpdateCredentialsDTO,
-  ): Promise<ResponseDTO> {
+  update(@Req() req: Request): Promise<ResponseDTO> {
     return this.credentials_service.update(req);
   }
 
@@ -64,10 +70,7 @@ export class CredentialsController {
   })
   @HttpCode(HttpStatus.OK)
   @Post('password')
-  get_password(
-    @Req() req: Request,
-    @Body() get_password_dto: GetPasswordDTO,
-  ): Promise<string> {
+  get_password(@Req() req: Request): Promise<string> {
     return this.credentials_service.get_password(req);
   }
 
@@ -77,10 +80,7 @@ export class CredentialsController {
   })
   @HttpCode(HttpStatus.OK)
   @Delete()
-  remove(
-    @Req() req: Request,
-    @Body() delete_dto: DeleteCredentialsDTO,
-  ): Promise<ResponseDTO> {
+  remove(@Req() req: Request): Promise<ResponseDTO> {
     return this.credentials_service.remove(req);
   }
 
@@ -95,10 +95,7 @@ export class CredentialsController {
   })
   @HttpCode(HttpStatus.OK)
   @Get('existence')
-  has_any(
-    @Req() req: Request,
-    @Query('host') host: string,
-  ): Promise<ResponseDTO> {
+  has_any(@Req() req: Request): Promise<ResponseDTO> {
     return this.credentials_service.has_any(req);
   }
 }
