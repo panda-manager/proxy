@@ -53,6 +53,9 @@ export class RevertsService {
     },
   };
   async revert(info: TRedisDocument) {
+    if (!(info.uri in this.reverts) || !(info.method in this.reverts[info.uri]))
+      return;
+
     await this.reverts[info.uri][info.method](info);
   }
 }
