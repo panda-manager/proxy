@@ -1,7 +1,6 @@
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { TRedisDocument } from '../../../../config/redis/redis.service';
 import { BackendsOrchestratorService } from '../../backends_orchestrator.service';
-import { BackendUrl } from '../../../../common';
 import { AxiosRequestConfig } from 'axios';
 
 type TRevert = {
@@ -30,7 +29,6 @@ export class RevertsService {
     const config: AxiosRequestConfig = {
       method: 'DELETE',
       url: uri,
-      baseURL: BackendUrl[info.backend],
       data: {
         ...info.body,
         type: 'hard',
@@ -47,7 +45,6 @@ export class RevertsService {
     const config: AxiosRequestConfig = {
       method: 'PUT',
       url: uri,
-      baseURL: BackendUrl[info.backend],
       data: info.body,
       headers: info.headers,
     };
