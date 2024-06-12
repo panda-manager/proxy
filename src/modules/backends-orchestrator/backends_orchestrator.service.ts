@@ -4,7 +4,7 @@ import { GCPBackendService } from './backends/gcp-backend/gcp_backend.service';
 import { Request } from 'express';
 import { BaseBackendService } from './backends/base_backend.service';
 import { RedisService, TRedisDocument } from '../../config/redis/redis.service';
-import { BackendUrl, EBackend, HttpMethod, PAIR_UUID_HEADER } from '../../common';
+import { EBackend, HttpMethod, PAIR_UUID_HEADER } from '../../common';
 import { RevertsService } from './backends/reverts/reverts.service';
 import { AxiosRequestConfig } from 'axios';
 
@@ -27,18 +27,18 @@ export class BackendsOrchestratorService {
     }
   }
 
-  async redirect_request(req: Request, reg?: EBackend): Promise<any> {
+  async redirect_request(req: Request, backend?: EBackend): Promise<any> {
     const pair_redis_key = req.headers[PAIR_UUID_HEADER] as string;
     const found = await this.redis_service.get_key(pair_redis_key);
 
-    if (!found && !reg)
-      reg = Math.random() < 0.5 ? EBackend.AZURE : EBackend.GCP;
+    if (!found && !backend)
+      backend = Math.random() < 0.5 ? EBackend.AZURE : EBackend.GCP;
     else if (found)
-      reg = found.reg === EBackend.AZURE ? EBackend.GCP : EBackend.AZURE;
+      backend = found.backend === EBackend.AZURE ? EBackend.GCP : EBackend.AZURE;
 
-    const handler: BaseBackendService = this.conclude_handler(reg);
+    const handler: BaseBackendService = this.conclude_handler(backend);
     const info: TRedisDocument = {
-      reg,
+      backend,
       uri: req.url,
       method: req.method as HttpMethod,
       params: req.params,
@@ -71,19 +71,7 @@ export class BackendsOrchestratorService {
     return this.gcp_backend_service.make_request(config);
   }
 
-  make_request(info: TRedisDocument, backend: EBackend) {
-    const config: AxiosRequestConfig = {
-      method: info.method,
-      url: info.uri,
-      baseURL: BackendUrl[backend],
-      data: info.body,
-      params: info.params,
-      headers: {
-        ...info.headers,
-        host: 'panda-manager-proxy.io', //TODO
-      },
-    };
-
+  make_request(config: AxiosRequestConfig, backend: EBackend) {
     switch (backend) {
       case EBackend.AZURE:
         return this.request_azure(config);

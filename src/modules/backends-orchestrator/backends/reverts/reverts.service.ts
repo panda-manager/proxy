@@ -1,6 +1,8 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { TRedisDocument } from '../../../../config/redis/redis.service';
 import { BackendsOrchestratorService } from '../../backends_orchestrator.service';
+import { BackendUrl } from '../../../../common';
+import { AxiosRequestConfig } from 'axios';
 
 type TRevert = {
   [url: string]: {
@@ -14,12 +16,40 @@ export class RevertsService {
     private readonly backends_orchestrator: BackendsOrchestratorService,
   ) {}
   private async hard_delete_credentials(info: TRedisDocument): Promise<void> {
-    throw new NotImplementedException();
+    const uri = '/credentials';
+
+    const config: AxiosRequestConfig = {
+      method: 'DELETE',
+      url: uri,
+      baseURL: BackendUrl[info.backend],
+      data: {
+        ...info.body,
+        type: 'hard',
+      },
+      headers: info.headers,
+    };
+
+    await this.backends_orchestrator.make_request(config, info.backend);
+  }
+
+  private async restore_credentials(info: TRedisDocument): Promise<void> {
+    const uri = '/credentials/restore';
+
+    const config: AxiosRequestConfig = {
+      method: 'PUT',
+      url: uri,
+      baseURL: BackendUrl[info.backend],
+      data: info.body,
+      headers: info.headers,
+    };
+
+    await this.backends_orchestrator.make_request(config, info.backend);
   }
 
   private reverts: TRevert = {
     credentials: {
       POST: this.hard_delete_credentials,
+      DELETE: this.restore_credentials,
     },
   };
   async revert(info: TRedisDocument) {

@@ -3,7 +3,7 @@ import { Redis } from 'ioredis';
 import { EBackend, HttpHeaders, HttpMethod, QueryParams } from '../../common';
 
 export type TRedisDocument = {
-  reg: EBackend;
+  backend: EBackend;
   uri: string;
   method: HttpMethod;
   params: QueryParams;
