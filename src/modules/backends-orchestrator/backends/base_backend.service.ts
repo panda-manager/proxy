@@ -38,4 +38,10 @@ export abstract class BaseBackendService {
   which(): EBackend {
     return this.identifier;
   }
+
+  make_request(config: AxiosRequestConfig): any {
+    return this.http_service
+      .request(config)
+      .pipe(map((response) => response.data));
+  }
 }

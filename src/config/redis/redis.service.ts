@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
-import { EBackend, HttpMethod, QueryParams } from '../../common';
+import { EBackend, HttpHeaders, HttpMethod, QueryParams } from '../../common';
 
 export type TRedisDocument = {
   reg: EBackend;
@@ -8,6 +8,7 @@ export type TRedisDocument = {
   method: HttpMethod;
   params: QueryParams;
   body: JSON;
+  headers: HttpHeaders;
 };
 
 @Injectable()

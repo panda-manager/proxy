@@ -4,10 +4,10 @@ import { GCPBackendService } from './backends/gcp-backend/gcp_backend.service';
 import { Request } from 'express';
 import { BaseBackendService } from './backends/base_backend.service';
 import { RedisService, TRedisDocument } from '../../config/redis/redis.service';
-import { EBackend, HttpMethod, PAIR_UUID_HEADER } from '../../common';
+import { BackendUrl, EBackend, HttpMethod, PAIR_UUID_HEADER } from '../../common';
 import { RevertsService } from './backends/reverts/reverts.service';
+import { AxiosRequestConfig } from 'axios';
 
-export type RegionNumber = number;
 @Injectable()
 export class BackendsOrchestratorService {
   private readonly logger = new Logger(BackendsOrchestratorService.name);
@@ -18,8 +18,8 @@ export class BackendsOrchestratorService {
     private readonly redis_service: RedisService,
   ) {}
 
-  private conclude_handler(reg: RegionNumber): BaseBackendService {
-    switch (reg) {
+  private conclude_handler(backend: EBackend): BaseBackendService {
+    switch (backend) {
       case EBackend.AZURE:
         return this.azure_backend_service;
       case EBackend.GCP:
@@ -43,6 +43,7 @@ export class BackendsOrchestratorService {
       method: req.method as HttpMethod,
       params: req.params,
       body: req.body,
+      headers: req.headers,
     };
 
     this.logger.log(
@@ -59,6 +60,35 @@ export class BackendsOrchestratorService {
     } catch (e: unknown) {
       await this.reverts_service.revert(info);
       throw e;
+    }
+  }
+
+  private request_azure(config: AxiosRequestConfig): Promise<any> {
+    return this.azure_backend_service.make_request(config);
+  }
+
+  private request_gcp(config: AxiosRequestConfig): Promise<any> {
+    return this.gcp_backend_service.make_request(config);
+  }
+
+  make_request(info: TRedisDocument, backend: EBackend) {
+    const config: AxiosRequestConfig = {
+      method: info.method,
+      url: info.uri,
+      baseURL: BackendUrl[backend],
+      data: info.body,
+      params: info.params,
+      headers: {
+        ...info.headers,
+        host: 'panda-manager-proxy.io', //TODO
+      },
+    };
+
+    switch (backend) {
+      case EBackend.AZURE:
+        return this.request_azure(config);
+      case EBackend.GCP:
+        return this.request_gcp(config);
     }
   }
 }

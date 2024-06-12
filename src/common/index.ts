@@ -22,3 +22,7 @@ export * from './responses/error_response.dto';
 export type QueryParams = {
   [key: string]: string;
 };
+
+export type HttpHeaders = {
+  [key: string]: any;
+};
