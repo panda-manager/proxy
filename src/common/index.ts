@@ -17,8 +17,6 @@ export const BackendUrl: TBackendUrl = {
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-export * from './responses/response.dto';
-export * from './responses/error_response.dto';
 export type QueryParams = {
   [key: string]: string;
 };
@@ -26,3 +24,6 @@ export type QueryParams = {
 export type HttpHeaders = {
   [key: string]: any;
 };
+
+export * from './responses/response.dto';
+export * from './responses/error_response.dto';

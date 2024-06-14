@@ -2,11 +2,12 @@ import { Injectable, NotImplementedException } from '@nestjs/common';
 import { TRedisDocument } from '../../../../config/redis/redis.service';
 import { BackendsOrchestratorService } from '../../backends_orchestrator.service';
 import { AxiosRequestConfig } from 'axios';
+import { HttpMethod } from '../../../../common';
 
 type TRevert = {
-  [url: string]: {
-    [method: string]: (info: TRedisDocument) => Promise<void>;
-  };
+  [url: string]: Partial<{
+    [method in HttpMethod]: (info: TRedisDocument) => Promise<void>;
+  }>;
 };
 
 @Injectable()
@@ -19,7 +20,7 @@ export class RevertsService {
     credentials: {
       POST: this.hard_delete_credentials,
       DELETE: this.restore_credentials,
-      PUT: this.revert_update,
+      PUT: this.revert_update_credentials,
     },
   };
 
@@ -52,11 +53,11 @@ export class RevertsService {
     await this.backends_orchestrator.make_request(config, info.backend);
   }
 
-  private async revert_update(): Promise<void> {
+  private async revert_update_credentials(): Promise<void> {
     throw new NotImplementedException();
   }
 
-  async revert(info: TRedisDocument) {
+  async revert(info: TRedisDocument): Promise<void> {
     if (!(info.uri in this.reverts) || !(info.method in this.reverts[info.uri]))
       return;
 
