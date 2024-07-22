@@ -1,4 +1,4 @@
-name: Trigger auto deployment for panda-manager-backend
+name: Trigger auto deployment for panda-manager-proxy
 
 on:
   push:
