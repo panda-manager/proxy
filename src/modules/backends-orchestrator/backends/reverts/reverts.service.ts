@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { TRedisDocument } from '../../../../config/redis/redis.service';
 import { BackendsOrchestratorService } from '../../backends_orchestrator.service';
 import { AxiosRequestConfig } from 'axios';
@@ -13,6 +13,7 @@ type TRevert = {
 @Injectable()
 export class RevertsService {
   constructor(
+    @Inject(forwardRef(() => BackendsOrchestratorService))
     private readonly backends_orchestrator: BackendsOrchestratorService,
   ) {}
 

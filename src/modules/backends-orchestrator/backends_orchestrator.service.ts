@@ -1,12 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { AzureBackendService } from './backends/azure-backend/azure_backend.service';
 import { GCPBackendService } from './backends/gcp-backend/gcp_backend.service';
 import { Request } from 'express';
 import { BaseBackendService } from './backends/base_backend.service';
 import { RedisService, TRedisDocument } from '../../config/redis/redis.service';
 import { EBackend, HttpMethod, PAIR_UUID_HEADER } from '../../common';
-import { RevertsService } from './backends/reverts/reverts.service';
 import { AxiosRequestConfig } from 'axios';
+import { RevertsService } from './backends/reverts/reverts.service';
 
 @Injectable()
 export class BackendsOrchestratorService {
@@ -14,6 +14,7 @@ export class BackendsOrchestratorService {
   constructor(
     private readonly azure_backend_service: AzureBackendService,
     private readonly gcp_backend_service: GCPBackendService,
+    @Inject(forwardRef(() => RevertsService))
     private readonly reverts_service: RevertsService,
     private readonly redis_service: RedisService,
   ) {}
