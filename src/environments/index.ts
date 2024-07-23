@@ -28,17 +28,11 @@ export const OTP_MAIL_ACCOUNT = {
 export const AZURE_BACKEND_URL = process.env.AZURE_BACKEND_URL;
 export const GCP_BACKEND_URL = process.env.GCP_BACKEND_URL;
 
-export const REDIS_CONFIG = {
-  HOST: process.env.REDIS_HOST,
-  PORT: parseInt(process.env.REDIS_PORT),
-  USER: process.env.REDIS_USER,
-  PASS: process.env.REDIS_PASSWORD,
-  URL: process.env.REDIS_URL,
-};
+export const REDIS_URL = process.env.REDIS_URL;
 
 export default () => ({
   CORS_HANDLER,
-  REDIS_CONFIG,
+  REDIS_URL,
   OTP_MAIL_ACCOUNT,
   APP_URL,
   APP_PORT,
