@@ -2,10 +2,10 @@ import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { AxiosRequestConfig } from 'axios';
-import { map } from 'rxjs';
 import { BackendUrl, EBackend } from '../../../common';
 import { ConfigService } from '@nestjs/config';
 import { Agent } from 'https';
+import { map } from 'rxjs';
 
 @Injectable()
 export abstract class BaseBackendService {
@@ -26,7 +26,6 @@ export abstract class BaseBackendService {
       data: body,
       params,
       headers,
-      httpsAgent: new Agent({ rejectUnauthorized: false }),
     };
 
     return this.make_request(config);
@@ -43,6 +42,7 @@ export abstract class BaseBackendService {
     config = {
       ...config,
       baseURL: this.base_url(),
+      httpsAgent: new Agent({ rejectUnauthorized: false }),
     };
 
     return this.http_service
