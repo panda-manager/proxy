@@ -24,7 +24,7 @@ import { CredentialsService } from './credentials.service';
 
 @ApiTags('Credentials')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('custom'))
+@UseGuards(AuthGuard('jwt'))
 @Controller('credentials')
 export class CredentialsController {
   constructor(private readonly credentials_service: CredentialsService) {}
