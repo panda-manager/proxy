@@ -29,7 +29,9 @@ export class BackendsOrchestratorService {
   }
 
   async redirect_request(req: Request, backend?: EBackend): Promise<any> {
-    const pair_redis_key = req.headers[PAIR_UUID_HEADER] as string;
+    const { method, headers, url, body, params } = req;
+
+    const pair_redis_key = headers[PAIR_UUID_HEADER] as string;
     const found = await this.redis_service.get_key(pair_redis_key);
 
     if (!found && !backend)
@@ -38,21 +40,22 @@ export class BackendsOrchestratorService {
       backend =
         found.backend === EBackend.AZURE ? EBackend.GCP : EBackend.AZURE;
 
-    const handler: BaseBackendService = this.conclude_handler(backend);
     const info = {
       backend,
-      uri: req.url,
-      method: req.method,
-      params: req.params,
-      body: req.body,
-      headers: req.headers,
+      uri: url,
+      method,
+      params,
+      body,
+      headers,
     } as TRedisDocument;
 
-    this.logger.log(
-      `Redirecting ${req.method} ${req.url} to ${EBackend[handler.which()]}`,
-    );
-
     try {
+      const handler: BaseBackendService = this.conclude_handler(backend);
+
+      this.logger.log(
+        `Redirecting ${method} ${url} to ${EBackend[handler.which()]}`,
+      );
+
       const res = handler.redirect_request(req);
 
       if (!found) await this.redis_service.insert_key(pair_redis_key, info, 60);

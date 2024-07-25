@@ -5,6 +5,7 @@ import { AxiosRequestConfig } from 'axios';
 import { map } from 'rxjs';
 import { BackendUrl, EBackend } from '../../../common';
 import { ConfigService } from '@nestjs/config';
+import { Agent } from 'https';
 
 @Injectable()
 export abstract class BaseBackendService {
@@ -15,26 +16,20 @@ export abstract class BaseBackendService {
   ) {}
 
   async redirect_request(req: Request): Promise<any> {
-    const existing_xff = req.headers['X-Forwarded-For'] as string;
+    const { method, headers, url, body, params } = req;
+    delete headers['content-length'];
+    delete headers['host'];
 
     const config: AxiosRequestConfig = {
-      method: req.method,
-      url: req.url,
-      baseURL: this.base_url(),
-      data: req.body,
-      params: req.params,
-      headers: {
-        ...req.headers,
-        host: this.config_service.get('APP_URL'),
-        ['X-Forwarded-For']: !existing_xff
-          ? req.ip
-          : `${existing_xff}, ${req.ip}`,
-      },
+      method,
+      url,
+      data: body,
+      params,
+      headers,
+      httpsAgent: new Agent({ rejectUnauthorized: false }),
     };
 
-    return this.http_service
-      .request(config)
-      .pipe(map((response) => response.data));
+    return this.make_request(config);
   }
 
   which(): EBackend {
@@ -47,10 +42,6 @@ export abstract class BaseBackendService {
   make_request(config: AxiosRequestConfig): any {
     config = {
       ...config,
-      headers: {
-        ...config.headers,
-        host: this.config_service.get('APP_URL'),
-      },
       baseURL: this.base_url(),
     };
 
