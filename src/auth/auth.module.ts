@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from '../modules/user/user.module';
 import { OTPModule } from '../otp/otp.module';
-import { CustomStrategy } from './custom.strategy';
+import { JwtStrategy } from './jwt.strategy';
 import { BackendsOrchestratorModule } from '../modules/backends-orchestrator/backends_orchestrator.module';
 
 @Module({
@@ -12,9 +12,9 @@ import { BackendsOrchestratorModule } from '../modules/backends-orchestrator/bac
     OTPModule,
     UserModule,
     BackendsOrchestratorModule,
-    PassportModule.register({ defaultStrategy: 'custom', session: true }),
+    PassportModule.register({ defaultStrategy: 'jwt', session: true }),
   ],
-  providers: [AuthService, CustomStrategy],
+  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
   exports: [AuthService],
 })
