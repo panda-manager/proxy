@@ -1,7 +1,12 @@
-import { forwardRef, Inject, Injectable, NotImplementedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotImplementedException,
+} from '@nestjs/common';
 import { TRedisDocument } from '../../../../config/redis/redis.service';
 import { BackendsOrchestratorService } from '../../backends_orchestrator.service';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosHeaders, AxiosRequestConfig } from 'axios';
 import { HttpMethod } from '../../../../common';
 
 type TRevert = {
@@ -35,7 +40,7 @@ export class RevertsService {
         ...info.body,
         type: 'hard',
       },
-      headers: info.headers,
+      headers: info.headers as AxiosHeaders,
     };
 
     await this.backends_orchestrator.make_request(config, info.backend);
@@ -48,7 +53,7 @@ export class RevertsService {
       method: 'PUT',
       url: uri,
       data: info.body,
-      headers: info.headers,
+      headers: info.headers as AxiosHeaders,
     };
 
     await this.backends_orchestrator.make_request(config, info.backend);
