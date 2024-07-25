@@ -12,7 +12,7 @@ const env = configDotenv();
 expandDotenv(env);
 
 @Injectable()
-export class CustomStrategy extends PassportStrategy(Strategy, 'custom') {
+export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly config_service: ConfigService,
     private readonly backends_orchestrator_service: BackendsOrchestratorService,
