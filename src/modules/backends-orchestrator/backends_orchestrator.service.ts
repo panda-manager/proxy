@@ -1,12 +1,12 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { AzureBackendService } from './backends/azure-backend/azure_backend.service';
 import { GCPBackendService } from './backends/gcp-backend/gcp_backend.service';
-import { Request } from 'express';
 import { BaseBackendService } from './backends/base_backend.service';
 import { RedisService, TRedisDocument } from '../../config/redis/redis.service';
-import { EBackend, HttpMethod, PAIR_UUID_HEADER } from '../../common';
+import { EBackend, PAIR_UUID_HEADER } from '../../common';
 import { AxiosRequestConfig } from 'axios';
 import { RevertsService } from './backends/reverts/reverts.service';
+import { Request } from 'express';
 
 @Injectable()
 export class BackendsOrchestratorService {
@@ -39,14 +39,14 @@ export class BackendsOrchestratorService {
         found.backend === EBackend.AZURE ? EBackend.GCP : EBackend.AZURE;
 
     const handler: BaseBackendService = this.conclude_handler(backend);
-    const info: TRedisDocument = {
+    const info = {
       backend,
       uri: req.url,
-      method: req.method as HttpMethod,
+      method: req.method,
       params: req.params,
       body: req.body,
       headers: req.headers,
-    };
+    } as TRedisDocument;
 
     this.logger.log(
       `Redirecting ${req.method} ${req.url} to ${EBackend[handler.which()]}`,
@@ -55,7 +55,7 @@ export class BackendsOrchestratorService {
     try {
       const res = handler.redirect_request(req);
 
-      if (!found) await this.redis_service.insert_key(pair_redis_key, info);
+      if (!found) await this.redis_service.insert_key(pair_redis_key, info, 60);
       else await this.redis_service.delete_key(pair_redis_key);
 
       return res;
@@ -73,7 +73,9 @@ export class BackendsOrchestratorService {
     return this.gcp_backend_service.make_request(config);
   }
 
-  make_request(config: AxiosRequestConfig, backend: EBackend): Promise<any> {
+  make_request(config: AxiosRequestConfig, backend?: EBackend): Promise<any> {
+    if (!backend) backend = Math.random() < 0.5 ? EBackend.AZURE : EBackend.GCP;
+
     switch (backend) {
       case EBackend.AZURE:
         return this.request_azure(config);

@@ -28,11 +28,11 @@ export class RedisService {
     return JSON.parse(value) as TRedisDocument;
   }
 
-  async insert_key(key: string, value: TRedisDocument) {
+  async insert_key(key: string, value: TRedisDocument, expire_seconds: number) {
     const serializedValue = JSON.stringify(value);
 
     const res = this.redis_client.set(key, serializedValue);
-    await this.redis_client.expire(key, 60);
+    await this.redis_client.expire(key, expire_seconds);
 
     return res;
   }
