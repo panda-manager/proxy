@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { configDotenv } from 'dotenv';
@@ -26,6 +26,17 @@ export class CustomStrategy extends PassportStrategy(Strategy, 'custom') {
   async validate(
     payload: JwtPayload & { device: string },
   ): Promise<UserEntity> {
-    throw new NotImplementedException();
+    const { exp, sub } = payload;
+    const found = await this.backends_orchestrator_service
+      .make_request({
+        data: { email: sub },
+        url: '/user/find',
+      })
+      .then((response) => response.data as UserEntity);
+
+    if (!found || (exp && exp < Date.now() / 1000))
+      throw new UnauthorizedException();
+
+    return found;
   }
 }
