@@ -27,12 +27,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     payload: JwtPayload & { device: string },
   ): Promise<UserEntity> {
     const { exp, sub } = payload;
-    const found = await this.backends_orchestrator_service
-      .make_request({
-        data: { email: sub },
-        url: '/user/find',
-      })
-      .then((response) => response.data as UserEntity);
+    const found = await this.backends_orchestrator_service.make_request({
+      data: { email: sub },
+      url: '/user/find',
+    });
 
     if (!found || (exp && exp < Date.now() / 1000))
       throw new UnauthorizedException();
