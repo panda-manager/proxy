@@ -76,14 +76,17 @@ export class BackendsOrchestratorService {
     return this.gcp_backend_service.make_request(config);
   }
 
-  make_request(config: AxiosRequestConfig, backend?: EBackend): Promise<any> {
+  async make_request(
+    config: AxiosRequestConfig,
+    backend?: EBackend,
+  ): Promise<any> {
     if (!backend) backend = Math.random() < 0.5 ? EBackend.AZURE : EBackend.GCP;
 
     switch (backend) {
       case EBackend.AZURE:
-        return this.request_azure(config);
+        return await this.request_azure(config);
       case EBackend.GCP:
-        return this.request_gcp(config);
+        return await this.request_gcp(config);
     }
   }
 }
