@@ -33,4 +33,8 @@ export class CredentialsService {
   async has_any(req: Request): Promise<ResponseDTO> {
     return this.backends_orchestrator_service.redirect_request(req);
   }
+
+  async restore(req: Request, backend: EBackend): Promise<ResponseDTO> {
+    return this.backends_orchestrator_service.redirect_request(req, backend);
+  }
 }

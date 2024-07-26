@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotImplementedException } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { Request } from 'express';
 import { ResponseDTO } from '../common';
 import { AccessTokenResponseDTO } from './dto/access_token_response.dto';
@@ -6,7 +6,6 @@ import { BackendsOrchestratorService } from '../modules/backends-orchestrator/ba
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly backends_orchestrator: BackendsOrchestratorService,
   ) {}
@@ -19,6 +18,6 @@ export class AuthService {
   }
 
   async validate_master_password(req: Request): Promise<ResponseDTO> {
-    throw new NotImplementedException();
+    return this.backends_orchestrator.redirect_request(req);
   }
 }

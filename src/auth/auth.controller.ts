@@ -40,6 +40,7 @@ export class AuthController {
     return await this.auth_service.register(req);
   }
 
+  // TODO: Delete
   @ApiOkResponse({
     description: 'User master password validation',
     type: ResponseDTO,

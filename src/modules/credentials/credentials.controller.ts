@@ -99,4 +99,15 @@ export class CredentialsController {
   has_any(@Req() req: Request): Promise<ResponseDTO> {
     return this.credentials_service.has_any(req);
   }
+
+  @ApiOkResponse({
+    status: HttpStatus.OK,
+    type: ResponseDTO,
+  })
+  @HttpCode(HttpStatus.OK)
+  @Put('restore')
+  async restore(@Req() req: Request): Promise<ResponseDTO> {
+    await this.credentials_service.restore(req, EBackend.AZURE);
+    return await this.credentials_service.restore(req, EBackend.GCP);
+  }
 }
