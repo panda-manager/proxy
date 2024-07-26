@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { BaseBackendService } from '../base_backend.service';
 import { HttpService } from '@nestjs/axios';
-import { EBackend } from '../../../../common';
 import { ConfigService } from '@nestjs/config';
+import { EBackend } from '../../../../common';
 
 @Injectable()
 export class GCPBackendService extends BaseBackendService {

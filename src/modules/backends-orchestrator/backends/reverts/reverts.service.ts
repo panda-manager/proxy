@@ -1,12 +1,8 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotImplementedException,
-} from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { TRedisDocument } from '../../../../config/redis/redis.service';
 import { BackendsOrchestratorService } from '../../backends_orchestrator.service';
 import { AxiosHeaders, AxiosRequestConfig } from 'axios';
+
 import { HttpMethod } from '../../../../common';
 
 type TRevert = {
