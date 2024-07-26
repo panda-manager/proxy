@@ -5,6 +5,7 @@ import { BackendUrl, EBackend } from '../../../common';
 import { ConfigService } from '@nestjs/config';
 import { Agent } from 'https';
 import { throwError } from 'rxjs';
+import { NODE_ENV } from '../../../environments';
 
 @Injectable()
 export abstract class BaseBackendService {
@@ -46,7 +47,7 @@ export abstract class BaseBackendService {
     config = {
       ...config,
       baseURL: this.base_url(),
-      httpsAgent: new Agent({ rejectUnauthorized: false }),
+      httpsAgent: new Agent({ rejectUnauthorized: NODE_ENV === 'production' }),
     };
 
     if (config.method === 'GET') delete config.data;
