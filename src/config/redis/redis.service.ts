@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { RevertSchema } from './dto/revert.dto';
 import { Seconds } from '../../common';
+import { OTPSchema } from './dto/otp.dto';
 
 @Injectable()
 export class RedisService {
@@ -20,7 +21,11 @@ export class RedisService {
     return JSON.parse(value) as RevertSchema;
   }
 
-  async insertKey(key: string, value: RevertSchema, expire: Seconds) {
+  async insertKey(
+    key: string,
+    value: RevertSchema | OTPSchema,
+    expire: Seconds,
+  ) {
     const serializedValue = JSON.stringify(value);
 
     const res = this.redisClient.set(key, serializedValue);
