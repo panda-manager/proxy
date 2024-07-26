@@ -30,6 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const found = await this.backends_orchestrator_service.make_request({
       data: { email: sub },
       url: '/user/find',
+      method: 'GET',
     });
 
     if (!found || (exp && exp < Date.now() / 1000))
