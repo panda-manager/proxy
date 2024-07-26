@@ -34,3 +34,5 @@ export type TRevertsMap = {
     [method in HttpMethod]: (info: RevertSchema) => Promise<void>;
   }>;
 };
+
+export type Seconds = number;

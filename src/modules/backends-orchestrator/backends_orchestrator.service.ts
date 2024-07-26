@@ -7,7 +7,7 @@ import { EBackend, PAIR_UUID_HEADER } from '../../common';
 import { AxiosRequestConfig } from 'axios';
 import { RevertsService } from './backends/reverts/reverts.service';
 import { Request } from 'express';
-import { RevertSchema } from '../../config/redis/dto/revert.dto';
+import { RevertSchema, RevertTTL } from '../../config/redis/dto/revert.dto';
 
 @Injectable()
 export class BackendsOrchestratorService {
@@ -64,7 +64,7 @@ export class BackendsOrchestratorService {
       const res = handler.redirect_request(req);
 
       if (!found && pair_redis_key)
-        await this.redis_service.insert_key(pair_redis_key, info, 60);
+        await this.redis_service.insert_key(pair_redis_key, info, RevertTTL);
       else if (pair_redis_key)
         await this.redis_service.delete_key(pair_redis_key);
 
