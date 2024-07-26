@@ -2,11 +2,12 @@ import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { AzureBackendService } from './backends/azure-backend/azure_backend.service';
 import { GCPBackendService } from './backends/gcp-backend/gcp_backend.service';
 import { BaseBackendService } from './backends/base_backend.service';
-import { RedisService, TRedisDocument } from '../../config/redis/redis.service';
+import { RedisService } from '../../config/redis/redis.service';
 import { EBackend, PAIR_UUID_HEADER } from '../../common';
 import { AxiosRequestConfig } from 'axios';
 import { RevertsService } from './backends/reverts/reverts.service';
 import { Request } from 'express';
+import { RevertSchema } from '../../config/redis/dto/revert.dto';
 
 @Injectable()
 export class BackendsOrchestratorService {
@@ -49,7 +50,7 @@ export class BackendsOrchestratorService {
       params,
       body,
       headers,
-    } as TRedisDocument;
+    } as RevertSchema;
 
     try {
       const handler: BaseBackendService = this.conclude_handler(backend);

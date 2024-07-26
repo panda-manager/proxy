@@ -1,15 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Redis } from 'ioredis';
-import { EBackend, HttpHeaders, HttpMethod, QueryParams } from '../../common';
-
-export type TRedisDocument = {
-  backend: EBackend;
-  uri: string;
-  method: HttpMethod;
-  params: QueryParams;
-  body: JSON;
-  headers: HttpHeaders;
-};
+import { RevertSchema } from './dto/revert.dto';
 
 @Injectable()
 export class RedisService {
@@ -25,10 +16,10 @@ export class RedisService {
 
   async get_key(key: string) {
     const value = await this.redis_client.get(key);
-    return JSON.parse(value) as TRedisDocument;
+    return JSON.parse(value) as RevertSchema;
   }
 
-  async insert_key(key: string, value: TRedisDocument, expire_seconds: number) {
+  async insert_key(key: string, value: RevertSchema, expire_seconds: number) {
     const serializedValue = JSON.stringify(value);
 
     const res = this.redis_client.set(key, serializedValue);

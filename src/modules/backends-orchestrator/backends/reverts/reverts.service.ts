@@ -1,20 +1,8 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotImplementedException,
-} from '@nestjs/common';
-import { TRedisDocument } from '../../../../config/redis/redis.service';
+import { forwardRef, Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { BackendsOrchestratorService } from '../../backends_orchestrator.service';
 import { AxiosHeaders, AxiosRequestConfig } from 'axios';
-
-import { HttpMethod } from '../../../../common';
-
-type TRevert = {
-  [url: string]: Partial<{
-    [method in HttpMethod]: (info: TRedisDocument) => Promise<void>;
-  }>;
-};
+import { TRevertsMap } from '../../../../common';
+import { RevertSchema } from '../../../../config/redis/dto/revert.dto';
 
 @Injectable()
 export class RevertsService {
@@ -23,7 +11,7 @@ export class RevertsService {
     private readonly backends_orchestrator: BackendsOrchestratorService,
   ) {}
 
-  private reverts: TRevert = {
+  private reverts: TRevertsMap = {
     credentials: {
       POST: this.hard_delete_credentials,
       DELETE: this.restore_credentials,
@@ -31,7 +19,7 @@ export class RevertsService {
     },
   };
 
-  private async hard_delete_credentials(info: TRedisDocument): Promise<void> {
+  private async hard_delete_credentials(info: RevertSchema): Promise<void> {
     const uri = '/credentials';
 
     const config: AxiosRequestConfig = {
@@ -47,7 +35,7 @@ export class RevertsService {
     await this.backends_orchestrator.make_request(config, info.backend);
   }
 
-  private async restore_credentials(info: TRedisDocument): Promise<void> {
+  private async restore_credentials(info: RevertSchema): Promise<void> {
     const uri = '/credentials/restore';
 
     const config: AxiosRequestConfig = {
@@ -64,7 +52,7 @@ export class RevertsService {
     throw new NotImplementedException();
   }
 
-  async revert(info: TRedisDocument): Promise<void> {
+  async revert(info: RevertSchema): Promise<void> {
     if (!(info.uri in this.reverts) || !(info.method in this.reverts[info.uri]))
       return;
 
