@@ -1,4 +1,4 @@
-import { BadRequestException, ImATeapotException, Injectable, Logger, NotImplementedException } from '@nestjs/common';
+import { BadRequestException, ImATeapotException, Injectable, Logger } from '@nestjs/common';
 import { UserService } from '../modules/user/user.service';
 import { OTPVerifyDTO } from './dto/otp_verify.dto';
 import { ConfigService } from '@nestjs/config';
@@ -24,7 +24,40 @@ export class OTPService {
   ) {}
 
   async verifyOTP(otpVerifyDTO: OTPVerifyDTO): Promise<ResponseDTO> {
-    throw new NotImplementedException();
+    const user: UserEntity = await this.userService.find(otpVerifyDTO.email);
+
+    if (!user)
+      throw new BadRequestException(
+        `No such user with email ${otpVerifyDTO.email}`,
+      );
+
+    const foundOTP: OTPSchema = await this.redisService.getKey(
+      `otp:${otpVerifyDTO.otp}`,
+    );
+
+    if (!foundOTP)
+      throw new BadRequestException(
+        `No such OTP found for user ${otpVerifyDTO.email}`,
+      );
+
+    await this.userService.setDeviceVerified(
+      user,
+      foundOTP.device,
+      EBackend.AZURE,
+    );
+
+    await this.userService.setDeviceVerified(
+      user,
+      foundOTP.device,
+      EBackend.GCP,
+    );
+
+    this.logger.debug(`Verified device for user ${otpVerifyDTO.email}`);
+    await this.redisService.deleteKey(`otp:${otpVerifyDTO.otp}`);
+
+    return {
+      message: `${foundOTP.device} is now verified for user ${otpVerifyDTO.email}!`,
+    };
   }
 
   private async sendVerificationEmail(
@@ -65,14 +98,7 @@ export class OTPService {
 
   async sendOtp(req: Request, email: string): Promise<ResponseDTO> {
     const device = getDeviceIdentifier(req);
-
-    const user: UserEntity = await this.backendsOrchestratorService.makeRequest(
-      {
-        data: { email },
-        url: '/user/find',
-        method: 'GET',
-      },
-    );
+    const user: UserEntity = await this.userService.find(email);
 
     if (!user)
       throw new BadRequestException(`No such user with email ${email}`);

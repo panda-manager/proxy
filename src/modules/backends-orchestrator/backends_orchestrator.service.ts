@@ -33,7 +33,7 @@ export class BackendsOrchestratorService {
     const { method, headers, url, body, params } = req;
 
     const pairRedisKey = `revert:${headers[PAIR_UUID_HEADER]}`;
-    const found = !pairRedisKey
+    const found: RevertSchema = !pairRedisKey
       ? null
       : await this.redisService.getKey(pairRedisKey);
 

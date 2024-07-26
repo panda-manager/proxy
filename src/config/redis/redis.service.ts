@@ -16,9 +16,9 @@ export class RedisService {
     });
   }
 
-  async getKey(key: string) {
+  async getKey(key: string): Promise<any> {
     const value = await this.redisClient.get(key);
-    return JSON.parse(value) as RevertSchema;
+    return JSON.parse(value);
   }
 
   async insertKey(
