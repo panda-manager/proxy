@@ -1,4 +1,9 @@
-import { EBackend, HttpHeaders, HttpMethod, QueryParams } from '../../../common';
+import {
+  EBackend,
+  HttpHeaders,
+  HttpMethod,
+  QueryParams,
+} from '../../../common';
 
 export interface RevertSchema {
   backend: EBackend;
@@ -7,4 +12,4 @@ export interface RevertSchema {
   params: QueryParams;
   body: JSON;
   headers: HttpHeaders;
-};
+}
