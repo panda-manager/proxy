@@ -19,6 +19,6 @@ export class AuthService {
   }
 
   async validate_master_password(req: Request): Promise<ResponseDTO> {
-    return this.backends_orchestrator.redirect_request(req);
+    throw new NotImplementedException();
   }
 }

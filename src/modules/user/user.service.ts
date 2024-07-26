@@ -24,4 +24,11 @@ export class UserService {
   ): Promise<ResponseDTO> {
     throw new NotImplementedException();
   }
+
+  async validate_master_password(
+    req: Request,
+    master_password: string,
+  ): Promise<ResponseDTO> {
+    throw new NotImplementedException();
+  }
 }
