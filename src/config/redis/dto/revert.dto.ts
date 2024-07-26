@@ -1,9 +1,5 @@
-import {
-  EBackend,
-  HttpHeaders,
-  HttpMethod,
-  QueryParams,
-} from '../../../common';
+import { EBackend, HttpMethod, QueryParams } from '../../../common';
+import { RawAxiosRequestHeaders } from 'axios';
 
 export interface RevertSchema {
   backend: EBackend;
@@ -11,5 +7,5 @@ export interface RevertSchema {
   method: HttpMethod;
   params: QueryParams;
   body: JSON;
-  headers: HttpHeaders;
+  headers: RawAxiosRequestHeaders;
 }
