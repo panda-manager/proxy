@@ -1,11 +1,11 @@
 import { Request } from 'express';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { AxiosRequestConfig } from 'axios';
 import { BackendUrl, EBackend } from '../../../common';
 import { ConfigService } from '@nestjs/config';
 import { Agent } from 'https';
-import { map } from 'rxjs';
+import { catchError, map, throwError } from 'rxjs';
 
 @Injectable()
 export abstract class BaseBackendService {
@@ -53,8 +53,18 @@ export abstract class BaseBackendService {
 
     if (config.method === 'GET') delete config.data;
 
-    return this.http_service
-      .request(config)
-      .pipe(map((response) => response.data));
+    return this.http_service.request(config).pipe(
+      map((response) => response.data),
+      catchError((error) => {
+        return throwError(
+          () =>
+            new HttpException(
+              error.response.data,
+              error.response.data.statusCode ||
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            ),
+        );
+      }),
+    );
   }
 }
