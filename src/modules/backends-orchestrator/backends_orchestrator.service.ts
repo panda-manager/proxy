@@ -32,7 +32,9 @@ export class BackendsOrchestratorService {
     const { method, headers, url, body, params } = req;
 
     const pair_redis_key = headers[PAIR_UUID_HEADER] as string;
-    const found = await this.redis_service.get_key(pair_redis_key);
+    const found = !pair_redis_key
+      ? null
+      : await this.redis_service.get_key(pair_redis_key);
 
     if (!found && !backend)
       backend = Math.random() < 0.5 ? EBackend.AZURE : EBackend.GCP;
@@ -58,8 +60,10 @@ export class BackendsOrchestratorService {
 
       const res = handler.redirect_request(req);
 
-      if (!found) await this.redis_service.insert_key(pair_redis_key, info, 60);
-      else await this.redis_service.delete_key(pair_redis_key);
+      if (!found && pair_redis_key)
+        await this.redis_service.insert_key(pair_redis_key, info, 60);
+      else if (pair_redis_key)
+        await this.redis_service.delete_key(pair_redis_key);
 
       return res;
     } catch (e: unknown) {
