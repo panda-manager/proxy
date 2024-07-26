@@ -16,15 +16,15 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { ResponseDTO } from '../../common';
 import { CredentialsDTO } from './dto/credentials.dto';
 import { CredentialsService } from './credentials.service';
+import { JwtGuard } from '../../auth/jwt.guard';
 
 @ApiTags('Credentials')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtGuard)
 @Controller('credentials')
 export class CredentialsController {
   constructor(private readonly credentials_service: CredentialsService) {}
