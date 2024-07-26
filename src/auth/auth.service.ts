@@ -7,17 +7,17 @@ import { BackendsOrchestratorService } from '../modules/backends-orchestrator/ba
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly backends_orchestrator: BackendsOrchestratorService,
+    private readonly backendsOrchestratorService: BackendsOrchestratorService,
   ) {}
   login(req: Request): Promise<AccessTokenResponseDTO> {
-    return this.backends_orchestrator.redirect_request(req);
+    return this.backendsOrchestratorService.redirectRequest(req);
   }
 
   async register(req: Request): Promise<ResponseDTO> {
     throw new NotImplementedException();
   }
 
-  async validate_master_password(req: Request): Promise<ResponseDTO> {
-    return this.backends_orchestrator.redirect_request(req);
+  async validateMasterPassword(req: Request): Promise<ResponseDTO> {
+    return this.backendsOrchestratorService.redirectRequest(req);
   }
 }

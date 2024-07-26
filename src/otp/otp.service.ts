@@ -8,15 +8,15 @@ import { ResponseDTO } from '../common';
 export class OTPService {
   private readonly logger = new Logger(OTPService.name);
   constructor(
-    private readonly user_service: UserService,
-    private readonly config_service: ConfigService,
+    private readonly userService: UserService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async verify_otp(otp_verify_dto: OTPVerifyDTO): Promise<ResponseDTO> {
+  async verifyOTP(otpVerifyDTO: OTPVerifyDTO): Promise<ResponseDTO> {
     throw new NotImplementedException();
   }
 
-  async send_otp(req: Request, email: string): Promise<ResponseDTO> {
+  async sendOtp(req: Request, email: string): Promise<ResponseDTO> {
     throw new NotImplementedException();
   }
 }

@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable, NotImplementedException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotImplementedException,
+} from '@nestjs/common';
 import { BackendsOrchestratorService } from '../../backends_orchestrator.service';
 import { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import { TRevertsMap } from '../../../../common';
@@ -8,18 +13,18 @@ import { RevertSchema } from '../../../../config/redis/dto/revert.dto';
 export class RevertsService {
   constructor(
     @Inject(forwardRef(() => BackendsOrchestratorService))
-    private readonly backends_orchestrator: BackendsOrchestratorService,
+    private readonly backendsOrchestratorService: BackendsOrchestratorService,
   ) {}
 
   private reverts: TRevertsMap = {
     credentials: {
-      POST: this.hard_delete_credentials,
-      DELETE: this.restore_credentials,
-      PUT: this.revert_update_credentials,
+      POST: this.hardDeleteCredentials,
+      DELETE: this.restoreCredentials,
+      PUT: this.revertUpdateCredentials,
     },
   };
 
-  private async hard_delete_credentials(info: RevertSchema): Promise<void> {
+  private async hardDeleteCredentials(info: RevertSchema): Promise<void> {
     const uri = '/credentials';
 
     const config: AxiosRequestConfig = {
@@ -32,10 +37,10 @@ export class RevertsService {
       headers: info.headers as RawAxiosRequestHeaders,
     };
 
-    await this.backends_orchestrator.make_request(config, info.backend);
+    await this.backendsOrchestratorService.makeRequest(config, info.backend);
   }
 
-  private async restore_credentials(info: RevertSchema): Promise<void> {
+  private async restoreCredentials(info: RevertSchema): Promise<void> {
     const uri = '/credentials/restore';
 
     const config: AxiosRequestConfig = {
@@ -45,10 +50,10 @@ export class RevertsService {
       headers: info.headers as RawAxiosRequestHeaders,
     };
 
-    await this.backends_orchestrator.make_request(config, info.backend);
+    await this.backendsOrchestratorService.makeRequest(config, info.backend);
   }
 
-  private async revert_update_credentials(): Promise<void> {
+  private async revertUpdateCredentials(): Promise<void> {
     throw new NotImplementedException();
   }
 

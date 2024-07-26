@@ -15,7 +15,7 @@ import { JwtGuard } from '../../auth/jwt.guard';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-  constructor(private readonly user_service: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   @ApiOkResponse({
     description: 'User master password validation',
@@ -25,7 +25,7 @@ export class UserController {
   @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
   @Post('/validate/master')
-  async validate_master_password(@Req() req: Request): Promise<ResponseDTO> {
-    return this.user_service.validate_master_password(req);
+  async validateMasterPassword(@Req() req: Request): Promise<ResponseDTO> {
+    return this.userService.validateMasterPassword(req);
   }
 }

@@ -13,29 +13,29 @@ import { RevertSchema, RevertTTL } from '../../config/redis/dto/revert.dto';
 export class BackendsOrchestratorService {
   private readonly logger = new Logger(BackendsOrchestratorService.name);
   constructor(
-    private readonly azure_backend_service: AzureBackendService,
-    private readonly gcp_backend_service: GCPBackendService,
+    private readonly azureBackendService: AzureBackendService,
+    private readonly gcpBackendService: GCPBackendService,
     @Inject(forwardRef(() => RevertsService))
-    private readonly reverts_service: RevertsService,
-    private readonly redis_service: RedisService,
+    private readonly revertsService: RevertsService,
+    private readonly redisService: RedisService,
   ) {}
 
-  private conclude_handler(backend: EBackend): BaseBackendService {
+  private concludeHandler(backend: EBackend): BaseBackendService {
     switch (backend) {
       case EBackend.AZURE:
-        return this.azure_backend_service;
+        return this.azureBackendService;
       case EBackend.GCP:
-        return this.gcp_backend_service;
+        return this.gcpBackendService;
     }
   }
 
-  async redirect_request(req: Request, backend?: EBackend): Promise<any> {
+  async redirectRequest(req: Request, backend?: EBackend): Promise<any> {
     const { method, headers, url, body, params } = req;
 
-    const pair_redis_key = headers[PAIR_UUID_HEADER] as string;
-    const found = !pair_redis_key
+    const pairRedisKey = headers[PAIR_UUID_HEADER] as string;
+    const found = !pairRedisKey
       ? null
-      : await this.redis_service.get_key(pair_redis_key);
+      : await this.redisService.getKey(pairRedisKey);
 
     if (!found && !backend)
       backend = Math.random() < 0.5 ? EBackend.AZURE : EBackend.GCP;
@@ -55,35 +55,34 @@ export class BackendsOrchestratorService {
     } as RevertSchema;
 
     try {
-      const handler: BaseBackendService = this.conclude_handler(backend);
+      const handler: BaseBackendService = this.concludeHandler(backend);
 
       this.logger.log(
         `Redirecting ${method} ${url} to ${EBackend[handler.which()]}`,
       );
 
-      const res = handler.redirect_request(req);
+      const res = handler.redirectRequest(req);
 
-      if (!found && pair_redis_key)
-        await this.redis_service.insert_key(pair_redis_key, info, RevertTTL);
-      else if (pair_redis_key)
-        await this.redis_service.delete_key(pair_redis_key);
+      if (!found && pairRedisKey)
+        await this.redisService.insertKey(pairRedisKey, info, RevertTTL);
+      else if (pairRedisKey) await this.redisService.deleteKey(pairRedisKey);
 
       return res;
     } catch (e: unknown) {
-      await this.reverts_service.revert(info);
+      await this.revertsService.revert(info);
       throw e;
     }
   }
 
-  private request_azure(config: AxiosRequestConfig): Promise<any> {
-    return this.azure_backend_service.make_request(config);
+  private requestAzure(config: AxiosRequestConfig): Promise<any> {
+    return this.azureBackendService.makeRequest(config);
   }
 
-  private request_gcp(config: AxiosRequestConfig): Promise<any> {
-    return this.gcp_backend_service.make_request(config);
+  private requestGCP(config: AxiosRequestConfig): Promise<any> {
+    return this.gcpBackendService.makeRequest(config);
   }
 
-  async make_request(
+  async makeRequest(
     config: AxiosRequestConfig,
     backend?: EBackend,
   ): Promise<any> {
@@ -91,9 +90,9 @@ export class BackendsOrchestratorService {
 
     switch (backend) {
       case EBackend.AZURE:
-        return await this.request_azure(config);
+        return await this.requestAzure(config);
       case EBackend.GCP:
-        return await this.request_gcp(config);
+        return await this.requestGCP(config);
     }
   }
 }
