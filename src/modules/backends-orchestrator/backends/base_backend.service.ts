@@ -10,13 +10,13 @@ import { NODE_ENV } from '../../../environments';
 @Injectable()
 export abstract class BaseBackendService {
   protected constructor(
-    protected readonly config_service: ConfigService,
+    protected readonly configService: ConfigService,
     protected readonly identifier: EBackend,
   ) {}
 
-  async redirect_request(req: Request): Promise<any> {
+  async redirectRequest(req: Request): Promise<any> {
     const { method, headers, url, body, query, ip } = req;
-    const existing_xff = headers['x-forwarded-for'] as string;
+    const existingXFF = headers['x-forwarded-for'] as string;
 
     const config: AxiosRequestConfig = {
       method,
@@ -25,24 +25,24 @@ export abstract class BaseBackendService {
       params: query,
       headers: {
         authorization: headers.authorization,
-        ['x-forwarded-for']: existing_xff ? `${existing_xff}, ${ip}` : ip,
+        ['x-forwarded-for']: existingXFF ? `${existingXFF}, ${ip}` : ip,
       } as RawAxiosRequestHeaders,
     };
 
-    return this.make_request(config);
+    return this.makeRequest(config);
   }
 
   which(): EBackend {
     return this.identifier;
   }
 
-  protected base_url(): string {
+  protected getBaseUrl(): string {
     return BackendUrl[this.identifier];
   }
-  async make_request(config: AxiosRequestConfig): Promise<any> {
+  async makeRequest(config: AxiosRequestConfig): Promise<any> {
     config = {
       ...config,
-      baseURL: this.base_url(),
+      baseURL: this.getBaseUrl(),
       httpsAgent: new Agent({ rejectUnauthorized: NODE_ENV === 'production' }),
     };
 

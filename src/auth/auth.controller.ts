@@ -19,7 +19,7 @@ import { JwtGuard } from './jwt.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly auth_service: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
   @ApiOkResponse({
     description: 'Access token for future requests. Valid for 1h',
     type: AccessTokenResponseDTO,
@@ -27,7 +27,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Req() req: Request): Promise<AccessTokenResponseDTO> {
-    return this.auth_service.login(req);
+    return this.authService.login(req);
   }
 
   @ApiCreatedResponse({
@@ -37,7 +37,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
   async register(@Req() req: Request): Promise<ResponseDTO> {
-    return await this.auth_service.register(req);
+    return await this.authService.register(req);
   }
 
   // TODO: Delete
@@ -49,7 +49,7 @@ export class AuthController {
   @UseGuards(JwtGuard)
   @HttpCode(HttpStatus.OK)
   @Post('/validate/master')
-  async validate_master_password(@Req() req: Request): Promise<ResponseDTO> {
-    return this.auth_service.validate_master_password(req);
+  async validateMasterPassword(@Req() req: Request): Promise<ResponseDTO> {
+    return this.authService.validateMasterPassword(req);
   }
 }

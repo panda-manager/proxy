@@ -27,7 +27,7 @@ import { JwtGuard } from '../../auth/jwt.guard';
 @UseGuards(JwtGuard)
 @Controller('credentials')
 export class CredentialsController {
-  constructor(private readonly credentials_service: CredentialsService) {}
+  constructor(private readonly credentialsService: CredentialsService) {}
 
   @ApiCreatedResponse({
     status: HttpStatus.CREATED,
@@ -36,7 +36,7 @@ export class CredentialsController {
   @HttpCode(HttpStatus.CREATED)
   @Post()
   insert(@Req() req: Request): Promise<ResponseDTO> {
-    return this.credentials_service.insert(req);
+    return this.credentialsService.insert(req);
   }
 
   @ApiCreatedResponse({
@@ -46,7 +46,7 @@ export class CredentialsController {
   @HttpCode(HttpStatus.OK)
   @Put()
   update(@Req() req: Request): Promise<ResponseDTO> {
-    return this.credentials_service.update(req);
+    return this.credentialsService.update(req);
   }
 
   @ApiOkResponse({
@@ -60,8 +60,8 @@ export class CredentialsController {
   })
   @HttpCode(HttpStatus.OK)
   @Get()
-  get_all(@Req() req: Request): Promise<CredentialsDTO[]> {
-    return this.credentials_service.get_app_displayed_credentials(req);
+  getAll(@Req() req: Request): Promise<CredentialsDTO[]> {
+    return this.credentialsService.getAppDisplayedCredentials(req);
   }
 
   @ApiOkResponse({
@@ -70,8 +70,8 @@ export class CredentialsController {
   })
   @HttpCode(HttpStatus.OK)
   @Post('password')
-  get_password(@Req() req: Request): Promise<string> {
-    return this.credentials_service.get_password(req);
+  getPassword(@Req() req: Request): Promise<string> {
+    return this.credentialsService.getPassword(req);
   }
 
   @ApiOkResponse({
@@ -81,8 +81,8 @@ export class CredentialsController {
   @HttpCode(HttpStatus.OK)
   @Delete()
   async remove(@Req() req: Request): Promise<ResponseDTO> {
-    await this.credentials_service.remove(req, EBackend.AZURE);
-    return await this.credentials_service.remove(req, EBackend.GCP);
+    await this.credentialsService.remove(req, EBackend.AZURE);
+    return await this.credentialsService.remove(req, EBackend.GCP);
   }
 
   @ApiQuery({
@@ -96,8 +96,8 @@ export class CredentialsController {
   })
   @HttpCode(HttpStatus.OK)
   @Get('existence')
-  has_any(@Req() req: Request): Promise<ResponseDTO> {
-    return this.credentials_service.has_any(req);
+  hasAny(@Req() req: Request): Promise<ResponseDTO> {
+    return this.credentialsService.hasAny(req);
   }
 
   @ApiOkResponse({
@@ -107,7 +107,7 @@ export class CredentialsController {
   @HttpCode(HttpStatus.OK)
   @Put('restore')
   async restore(@Req() req: Request): Promise<ResponseDTO> {
-    await this.credentials_service.restore(req, EBackend.AZURE);
-    return await this.credentials_service.restore(req, EBackend.GCP);
+    await this.credentialsService.restore(req, EBackend.AZURE);
+    return await this.credentialsService.restore(req, EBackend.GCP);
   }
 }

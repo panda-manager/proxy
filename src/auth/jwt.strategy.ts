@@ -14,20 +14,20 @@ expandDotenv(env);
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly config_service: ConfigService,
-    private readonly backends_orchestrator_service: BackendsOrchestratorService,
+    private readonly configService: ConfigService,
+    private readonly backendsOrchestratorService: BackendsOrchestratorService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: config_service.get('ACCESS_TOKEN_SECRET'),
+      secretOrKey: configService.get('ACCESS_TOKEN_SECRET'),
     });
   }
   async validate(
     payload: JwtPayload & { device: string },
   ): Promise<UserEntity> {
     const { exp, sub } = payload;
-    const found = await this.backends_orchestrator_service.make_request({
+    const found = await this.backendsOrchestratorService.makeRequest({
       data: { email: sub },
       url: '/user/find',
       method: 'GET',

@@ -6,10 +6,10 @@ import { BackendsOrchestratorService } from '../backends-orchestrator/backends_o
 @Injectable()
 export class UserService {
   constructor(
-    private readonly backends_orchestrator_service: BackendsOrchestratorService,
+    private readonly backendsOrchestratorService: BackendsOrchestratorService,
   ) {}
 
-  async validate_master_password(req: Request): Promise<ResponseDTO> {
-    return this.backends_orchestrator_service.redirect_request(req);
+  async validateMasterPassword(req: Request): Promise<ResponseDTO> {
+    return this.backendsOrchestratorService.redirectRequest(req);
   }
 }

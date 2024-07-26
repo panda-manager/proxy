@@ -7,34 +7,34 @@ import { BackendsOrchestratorService } from '../backends-orchestrator/backends_o
 @Injectable()
 export class CredentialsService {
   constructor(
-    private readonly backends_orchestrator_service: BackendsOrchestratorService,
+    private readonly backendsOrchestratorService: BackendsOrchestratorService,
   ) {}
 
   async insert(req: Request): Promise<ResponseDTO> {
-    return this.backends_orchestrator_service.redirect_request(req);
+    return this.backendsOrchestratorService.redirectRequest(req);
   }
 
   async update(req: Request): Promise<ResponseDTO> {
-    return this.backends_orchestrator_service.redirect_request(req);
+    return this.backendsOrchestratorService.redirectRequest(req);
   }
 
-  async get_app_displayed_credentials(req: Request): Promise<CredentialsDTO[]> {
-    return this.backends_orchestrator_service.redirect_request(req);
+  async getAppDisplayedCredentials(req: Request): Promise<CredentialsDTO[]> {
+    return this.backendsOrchestratorService.redirectRequest(req);
   }
 
-  async get_password(req: Request): Promise<string> {
-    return this.backends_orchestrator_service.redirect_request(req);
+  async getPassword(req: Request): Promise<string> {
+    return this.backendsOrchestratorService.redirectRequest(req);
   }
 
   remove(req: Request, backend: EBackend): Promise<ResponseDTO> {
-    return this.backends_orchestrator_service.redirect_request(req, backend);
+    return this.backendsOrchestratorService.redirectRequest(req, backend);
   }
 
-  async has_any(req: Request): Promise<ResponseDTO> {
-    return this.backends_orchestrator_service.redirect_request(req);
+  async hasAny(req: Request): Promise<ResponseDTO> {
+    return this.backendsOrchestratorService.redirectRequest(req);
   }
 
   async restore(req: Request, backend: EBackend): Promise<ResponseDTO> {
-    return this.backends_orchestrator_service.redirect_request(req, backend);
+    return this.backendsOrchestratorService.redirectRequest(req, backend);
   }
 }

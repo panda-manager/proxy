@@ -5,7 +5,7 @@ import { EBackend } from '../../../../common';
 
 @Injectable()
 export class GCPBackendService extends BaseBackendService {
-  constructor(protected readonly config_service: ConfigService) {
-    super(config_service, EBackend.GCP);
+  constructor(protected readonly configService: ConfigService) {
+    super(configService, EBackend.GCP);
   }
 }
