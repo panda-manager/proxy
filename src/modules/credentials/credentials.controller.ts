@@ -17,7 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Request } from 'express';
-import { ResponseDTO } from '../../common';
+import { EBackend, ResponseDTO } from '../../common';
 import { CredentialsDTO } from './dto/credentials.dto';
 import { CredentialsService } from './credentials.service';
 import { JwtGuard } from '../../auth/jwt.guard';
@@ -80,8 +80,9 @@ export class CredentialsController {
   })
   @HttpCode(HttpStatus.OK)
   @Delete()
-  remove(@Req() req: Request): Promise<ResponseDTO> {
-    return this.credentials_service.remove(req);
+  async remove(@Req() req: Request): Promise<ResponseDTO> {
+    await this.credentials_service.remove(req, EBackend.AZURE);
+    return await this.credentials_service.remove(req, EBackend.GCP);
   }
 
   @ApiQuery({

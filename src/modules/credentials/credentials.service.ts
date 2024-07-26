@@ -1,13 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 import { CredentialsDTO } from './dto/credentials.dto';
-import { ResponseDTO } from '../../common';
+import { EBackend, ResponseDTO } from '../../common';
 import { BackendsOrchestratorService } from '../backends-orchestrator/backends_orchestrator.service';
 
 @Injectable()
 export class CredentialsService {
-  private readonly logger = new Logger(CredentialsService.name);
-
   constructor(
     private readonly backends_orchestrator_service: BackendsOrchestratorService,
   ) {}
@@ -28,8 +26,8 @@ export class CredentialsService {
     return this.backends_orchestrator_service.redirect_request(req);
   }
 
-  async remove(req: Request): Promise<ResponseDTO> {
-    return this.backends_orchestrator_service.redirect_request(req);
+  remove(req: Request, backend: EBackend): Promise<ResponseDTO> {
+    return this.backends_orchestrator_service.redirect_request(req, backend);
   }
 
   async has_any(req: Request): Promise<ResponseDTO> {

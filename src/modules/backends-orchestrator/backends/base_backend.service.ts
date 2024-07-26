@@ -1,16 +1,14 @@
 import { Request } from 'express';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { AxiosRequestConfig } from 'axios';
+import { HttpException, Injectable } from '@nestjs/common';
+import axios, { AxiosRequestConfig } from 'axios';
 import { BackendUrl, EBackend } from '../../../common';
 import { ConfigService } from '@nestjs/config';
 import { Agent } from 'https';
-import { catchError, map, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 
 @Injectable()
 export abstract class BaseBackendService {
   protected constructor(
-    protected readonly http_service: HttpService,
     protected readonly config_service: ConfigService,
     protected readonly identifier: EBackend,
   ) {}
@@ -53,18 +51,17 @@ export abstract class BaseBackendService {
 
     if (config.method === 'GET') delete config.data;
 
-    return this.http_service.request(config).pipe(
-      map((response) => response.data),
-      catchError((error) => {
-        return throwError(
+    return axios
+      .request(config)
+      .then((r) => r.data)
+      .catch((error) =>
+        throwError(
           () =>
             new HttpException(
               error.response.data,
-              error.response.data.statusCode ||
-                HttpStatus.INTERNAL_SERVER_ERROR,
+              error.response.data.statusCode,
             ),
-        );
-      }),
-    );
+        ),
+      );
   }
 }
