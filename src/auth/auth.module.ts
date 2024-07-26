@@ -4,10 +4,12 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { BackendsOrchestratorModule } from '../modules/backends-orchestrator/backends_orchestrator.module';
+import { UserModule } from '../modules/user/user.module';
 
 @Module({
   imports: [
     BackendsOrchestratorModule,
+    UserModule,
     PassportModule.register({ defaultStrategy: 'jwt', session: true }),
   ],
   providers: [AuthService, JwtStrategy],

@@ -32,8 +32,8 @@ export class BackendsOrchestratorService {
   async redirectRequest(req: Request, backend?: EBackend): Promise<any> {
     const { method, headers, url, body, params } = req;
 
-    const pairRedisKey = headers[PAIR_UUID_HEADER] as string;
-    const found = !pairRedisKey
+    const pairRedisKey = `revert:${headers[PAIR_UUID_HEADER]}`;
+    const found: RevertSchema = !pairRedisKey
       ? null
       : await this.redisService.getKey(pairRedisKey);
 

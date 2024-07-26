@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { expand as expandDotenv } from 'dotenv-expand';
 import { UserEntity } from 'modules/user/entity/user.entity';
 import { JwtPayload } from 'jsonwebtoken';
-import { BackendsOrchestratorService } from '../modules/backends-orchestrator/backends_orchestrator.service';
+import { UserService } from '../modules/user/user.service';
 
 const env = configDotenv();
 expandDotenv(env);
@@ -15,7 +15,7 @@ expandDotenv(env);
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly backendsOrchestratorService: BackendsOrchestratorService,
+    private readonly userService: UserService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -27,11 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     payload: JwtPayload & { device: string },
   ): Promise<UserEntity> {
     const { exp, sub } = payload;
-    const found = await this.backendsOrchestratorService.makeRequest({
-      data: { email: sub },
-      url: '/user/find',
-      method: 'GET',
-    });
+    const found: UserEntity = await this.userService.find(sub);
 
     if (!found || (exp && exp < Date.now() / 1000))
       throw new UnauthorizedException();
