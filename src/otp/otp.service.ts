@@ -93,7 +93,7 @@ export class OTPService {
     }
 
     const otpPayload: OTPSchema = {
-      user_id: user._id.toString(),
+      email: user.email,
       otp,
       device,
       created_at: new Date(),
