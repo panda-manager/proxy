@@ -16,15 +16,21 @@ export abstract class BaseBackendService {
   ) {}
 
   async redirect_request(req: Request): Promise<any> {
-    const { method, headers, url, body, params } = req;
+    const { method, headers, url, body, query, ip } = req;
+
+    // These headers are automatically added
     delete headers['content-length'];
     delete headers['host'];
+
+    // Add x forwarded for
+    const existing_xff = headers['x-forwarded-for'] as string;
+    headers['x-forwarded-for'] = existing_xff ? `${existing_xff}, ${ip}` : ip;
 
     const config: AxiosRequestConfig = {
       method,
       url,
       data: body,
-      params,
+      params: query,
       headers,
     };
 
@@ -38,12 +44,14 @@ export abstract class BaseBackendService {
   protected base_url(): string {
     return BackendUrl[this.identifier];
   }
-  make_request(config: AxiosRequestConfig): any {
+  async make_request(config: AxiosRequestConfig): Promise<any> {
     config = {
       ...config,
       baseURL: this.base_url(),
       httpsAgent: new Agent({ rejectUnauthorized: false }),
     };
+
+    if (config.method === 'GET') delete config.data;
 
     return this.http_service
       .request(config)
