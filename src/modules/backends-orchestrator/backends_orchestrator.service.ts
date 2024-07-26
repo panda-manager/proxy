@@ -49,7 +49,9 @@ export class BackendsOrchestratorService {
       method,
       params,
       body,
-      headers,
+      headers: {
+        authorization: headers.authorization,
+      },
     } as RevertSchema;
 
     try {

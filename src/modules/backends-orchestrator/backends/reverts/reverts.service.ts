@@ -1,11 +1,6 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotImplementedException,
-} from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotImplementedException } from '@nestjs/common';
 import { BackendsOrchestratorService } from '../../backends_orchestrator.service';
-import { AxiosHeaders, AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import { TRevertsMap } from '../../../../common';
 import { RevertSchema } from '../../../../config/redis/dto/revert.dto';
 
@@ -34,7 +29,7 @@ export class RevertsService {
         ...info.body,
         type: 'hard',
       },
-      headers: info.headers as AxiosHeaders,
+      headers: info.headers as RawAxiosRequestHeaders,
     };
 
     await this.backends_orchestrator.make_request(config, info.backend);
@@ -47,7 +42,7 @@ export class RevertsService {
       method: 'PUT',
       url: uri,
       data: info.body,
-      headers: info.headers as AxiosHeaders,
+      headers: info.headers as RawAxiosRequestHeaders,
     };
 
     await this.backends_orchestrator.make_request(config, info.backend);
