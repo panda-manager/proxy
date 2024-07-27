@@ -3,11 +3,11 @@ import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Req,
 import { Request } from 'express';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { AccessTokenResponseDTO } from './dto/access_token_response.dto';
-import { EBackend, ResponseDTO } from '../common';
+import { EBackend, ResponseDTO } from '../../common';
 import { JwtGuard } from './jwt.guard';
-import { CreateUserDTO } from '../modules/user/dto/create_user.dto';
+import { CreateUserDTO } from '../user/dto/create_user.dto';
 import { OTPService } from '../otp/otp.service';
-import { UserService } from '../modules/user/user.service';
+import { UserService } from '../user/user.service';
 
 @Controller('auth')
 export class AuthController {

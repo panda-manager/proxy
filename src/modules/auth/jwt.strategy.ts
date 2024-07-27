@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { expand as expandDotenv } from 'dotenv-expand';
 import { UserEntity } from 'modules/user/entity/user.entity';
 import { JwtPayload } from 'jsonwebtoken';
-import { UserService } from '../modules/user/user.service';
+import { UserService } from '../user/user.service';
 
 const env = configDotenv();
 expandDotenv(env);

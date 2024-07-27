@@ -1,21 +1,16 @@
-import {
-  BadRequestException,
-  ImATeapotException,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
-import { UserService } from '../modules/user/user.service';
+import { BadRequestException, ImATeapotException, Injectable, Logger } from '@nestjs/common';
+import { UserService } from '../user/user.service';
 import { OTPVerifyDTO } from './dto/otp_verify.dto';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
-import { EBackend, ResponseDTO } from '../common';
-import { UserEntity } from '../modules/user/entity/user.entity';
-import { BackendsOrchestratorService } from '../modules/backends-orchestrator/backends_orchestrator.service';
-import { getDeviceIdentifier, mailSender } from '../common/utils';
-import { UserStatus } from '../modules/user/enum/user_status';
+import { EBackend, ResponseDTO } from '../../common';
+import { UserEntity } from '../user/entity/user.entity';
+import { BackendsOrchestratorService } from '../backends-orchestrator/backends_orchestrator.service';
+import { getDeviceIdentifier, mailSender } from '../../common/utils';
+import { UserStatus } from '../user/enum/user_status';
 import { generate as generateOtp } from 'otp-generator';
-import { RedisService } from '../config/redis/redis.service';
-import { OTPSchema, OtpTTL } from '../config/redis/dto/otp.dto';
+import { RedisService } from '../../config/redis/redis.service';
+import { OTPSchema, OtpTTL } from '../../config/redis/dto/otp.dto';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
