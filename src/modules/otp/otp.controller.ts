@@ -1,20 +1,10 @@
 import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
-import {
-  Body,
-  Controller,
-  Get,
-  Header,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Query,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Get, Header, HttpCode, HttpStatus, Post, Query, Req } from '@nestjs/common';
 import { OTPVerifyDTO } from './dto/otp_verify.dto';
 import { OTPService } from './otp.service';
 import { Request } from 'express';
 import { OTPSendDTO } from './dto/otp_send.dto';
-import { ResponseDTO } from '../common';
+import { ResponseDTO } from '../../common';
 
 @ApiTags('OTP')
 @Controller('otp')

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
-import { EBackend, ResponseDTO } from '../common';
+import { EBackend, ResponseDTO } from '../../common';
 import { AccessTokenResponseDTO } from './dto/access_token_response.dto';
-import { BackendsOrchestratorService } from '../modules/backends-orchestrator/backends_orchestrator.service';
-import { getDeviceIdentifier } from '../common/utils';
+import { BackendsOrchestratorService } from '../backends-orchestrator/backends_orchestrator.service';
+import { getDeviceIdentifier } from '../../common/utils';
 import { RawAxiosRequestHeaders } from 'axios';
-import { CreateUserDTO } from '../modules/user/dto/create_user.dto';
+import { CreateUserDTO } from '../user/dto/create_user.dto';
 
 @Injectable()
 export class AuthService {
