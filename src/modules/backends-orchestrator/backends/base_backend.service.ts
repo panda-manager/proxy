@@ -42,7 +42,11 @@ export abstract class BaseBackendService {
     config = {
       ...config,
       baseURL: this.getBaseUrl(),
-      httpsAgent: new Agent({ rejectUnauthorized: false }),
+      httpsAgent: new Agent({
+        rejectUnauthorized: false,
+        host: this.getBaseUrl().split('//')[1],
+        port: 443,
+      }),
     };
 
     if (config.method === 'GET') delete config.data;
