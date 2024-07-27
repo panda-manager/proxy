@@ -79,4 +79,4 @@ jobs:
           registryUsername: oauth2accesstoken
           registryPassword: ${{ steps.auth.outputs.access_token }}
           imageToDeploy: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE }}:${{ github.sha }}
-          environmentVariables: "APP_URL=${{ vars.APP_URL }} APP_PORT=${{ vars.APP_PORT }} ACCESS_TOKEN_SECRET=secretref:access-token-secret OTP_MAIL_HOST=${{ vars.OTP_MAIL_HOST }} OTP_MAIL_USER=secretref:otp-mail-user OTP_MAIL_PASSWORD=secretref:otp-mail-password OTP_MAIL_PORT=${{ vars.OTP_MAIL_PORT }} REDIS_URL=secretref:redis-url BACKEND_URL_AZURE=${{ vars.BACKEND_URL_AZURE }} BACKEND_URL_GCP=${{ vars.BACKEND_URL_GCP }} NODE_ENV=production"
+          environmentVariables: "APP_URL=${{ vars.APP_URL }} APP_PORT=${{ vars.APP_PORT }} ACCESS_TOKEN_SECRET=secretref:access-token-secret OTP_MAIL_USER=secretref:otp-mail-user OTP_MAIL_PASSWORD=secretref:otp-mail-password REDIS_URL=secretref:redis-url BACKEND_URL_AZURE=${{ vars.BACKEND_URL_AZURE }} BACKEND_URL_GCP=${{ vars.BACKEND_URL_GCP }} NODE_ENV=production"
