@@ -16,7 +16,7 @@ export class AuthService {
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 
-  async register(
+  register(
     req: Request,
     createUserDTO: CreateUserDTO,
     backend: EBackend,
@@ -34,7 +34,7 @@ export class AuthService {
     );
   }
 
-  async validateMasterPassword(req: Request): Promise<ResponseDTO> {
+  validateMasterPassword(req: Request): Promise<ResponseDTO> {
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 }
