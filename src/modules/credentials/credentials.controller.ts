@@ -1,26 +1,10 @@
-import {
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Put,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Controller, Delete, Get, HttpCode, HttpStatus, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { EBackend, ResponseDTO } from '../../common';
 import { CredentialsDTO } from './dto/credentials.dto';
 import { CredentialsService } from './credentials.service';
-import { JwtGuard } from '../../auth/jwt.guard';
+import { JwtGuard } from '../auth/jwt.guard';
 
 @ApiTags('Credentials')
 @ApiBearerAuth()
