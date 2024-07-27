@@ -1,8 +1,11 @@
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
-import { ResponseDTO } from '../common';
+import { EBackend, ResponseDTO } from '../common';
 import { AccessTokenResponseDTO } from './dto/access_token_response.dto';
 import { BackendsOrchestratorService } from '../modules/backends-orchestrator/backends_orchestrator.service';
+import { getDeviceIdentifier } from '../common/utils';
+import { RawAxiosRequestHeaders } from 'axios';
+import { CreateUserDTO } from '../modules/user/dto/create_user.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,8 +16,22 @@ export class AuthService {
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 
-  async register(req: Request): Promise<ResponseDTO> {
-    throw new NotImplementedException();
+  async register(
+    req: Request,
+    createUserDTO: CreateUserDTO,
+    backend: EBackend,
+  ): Promise<ResponseDTO> {
+    return this.backendsOrchestratorService.makeRequest(
+      {
+        url: '/auth/register',
+        method: 'POST',
+        data: createUserDTO,
+        headers: {
+          'x-forwarded-for': getDeviceIdentifier(req),
+        } as RawAxiosRequestHeaders,
+      },
+      backend,
+    );
   }
 
   async validateMasterPassword(req: Request): Promise<ResponseDTO> {

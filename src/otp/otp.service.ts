@@ -1,4 +1,9 @@
-import { BadRequestException, ImATeapotException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ImATeapotException,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { UserService } from '../modules/user/user.service';
 import { OTPVerifyDTO } from './dto/otp_verify.dto';
 import { ConfigService } from '@nestjs/config';

@@ -1,5 +1,6 @@
 import { AuthService } from './auth.service';
 import {
+  Body,
   Controller,
   HttpCode,
   HttpStatus,
@@ -14,8 +15,9 @@ import {
   ApiOkResponse,
 } from '@nestjs/swagger';
 import { AccessTokenResponseDTO } from './dto/access_token_response.dto';
-import { ResponseDTO } from '../common';
+import { EBackend, ResponseDTO } from '../common';
 import { JwtGuard } from './jwt.guard';
+import { CreateUserDTO } from '../modules/user/dto/create_user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -36,8 +38,12 @@ export class AuthController {
   })
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
-  async register(@Req() req: Request): Promise<ResponseDTO> {
-    return await this.authService.register(req);
+  async register(
+    @Req() req: Request,
+    @Body() createUserDTO: CreateUserDTO,
+  ): Promise<ResponseDTO> {
+    await this.authService.register(req, createUserDTO, EBackend.AZURE);
+    return await this.authService.register(req, createUserDTO, EBackend.GCP);
   }
 
   // TODO: Delete
