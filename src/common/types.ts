@@ -6,11 +6,7 @@ export enum EBackend {
   GCP = 2,
 }
 
-type TBackendUrl = {
-  [key in EBackend]: string;
-};
-
-export const BackendUrl: TBackendUrl = {
+export const BackendUrl: { [key in EBackend]: string } = {
   [EBackend.AZURE]: AZURE_BACKEND_URL,
   [EBackend.GCP]: GCP_BACKEND_URL,
 };
@@ -19,10 +15,6 @@ export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export type QueryParams = {
   [key: string]: string;
-};
-
-export type HttpHeaders = {
-  [key: string]: any;
 };
 
 export type Omit<Type, Keys extends keyof Type> = {

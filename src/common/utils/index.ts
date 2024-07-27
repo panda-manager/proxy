@@ -1,13 +1,26 @@
 import { Request } from 'express';
 import { Transporter } from 'nodemailer';
 
+const retainLastOctet = (ip: string): string => {
+  if (!ip) return '';
+
+  const segments: string[] = ip.split('.');
+
+  if (segments.length > 1) {
+    segments.pop();
+    return segments.join('.') + '.0';
+  }
+
+  return ip;
+};
+
 export const getDeviceIdentifier = (req: Request): string => {
-  const { headers, ip, ips } = req;
+  const { headers, ips, ip } = req;
 
   if (headers['X-Forwarded-For'])
-    return headers['X-Forwarded-For'].toString().split(',')[0];
+    return retainLastOctet(headers['X-Forwarded-For'].toString().split(',')[0]);
 
-  return ips[0] ?? ip;
+  return retainLastOctet(ips[0] ?? ip);
 };
 
 export const mailSender = (

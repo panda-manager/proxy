@@ -8,7 +8,7 @@ import { OTPSchema } from './dto/otp.dto';
 export class RedisService {
   constructor(@Inject('REDIS_CLIENT') private readonly redisClient: Redis) {}
 
-  async keyExists(key: string): Promise<boolean> {
+  keyExists(key: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
       this.redisClient.exists(key).then((result: number) => {
         resolve(result === 1);
@@ -34,7 +34,7 @@ export class RedisService {
     return res;
   }
 
-  async deleteKey(key: string): Promise<number> {
+  deleteKey(key: string): Promise<number> {
     return new Promise<number>((resolve, reject) => {
       this.redisClient.del(key).then((result: number) => {
         resolve(result);
