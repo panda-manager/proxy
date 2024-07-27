@@ -1,8 +1,20 @@
 import { AuthService } from './auth.service';
-import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { Request } from 'express';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
-import { AccessTokenResponseDTO } from './dto/access_token_response.dto';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
 import { EBackend, ResponseDTO } from '../../common';
 import { JwtGuard } from './jwt.guard';
 import { CreateUserDTO } from '../user/dto/create_user.dto';
@@ -18,11 +30,11 @@ export class AuthController {
   ) {}
   @ApiOkResponse({
     description: 'Access token for future requests. Valid for 1h',
-    type: AccessTokenResponseDTO,
+    type: ResponseDTO,
   })
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Req() req: Request): Promise<AccessTokenResponseDTO> {
+  login(@Req() req: Request): Promise<ResponseDTO> {
     return this.authService.login(req);
   }
 

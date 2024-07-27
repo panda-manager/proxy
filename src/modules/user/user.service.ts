@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { EBackend, ResponseDTO } from '../../common';
 import { BackendsOrchestratorService } from '../backends-orchestrator/backends_orchestrator.service';
@@ -7,11 +7,14 @@ import { DeviceVerifyDTO } from './dto/device_verify.dto';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger(UserService.name);
   constructor(
     private readonly backendsOrchestratorService: BackendsOrchestratorService,
   ) {}
 
   async validateMasterPassword(req: Request): Promise<ResponseDTO> {
+    this.logger.debug('Validate password executed');
+
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 
@@ -20,6 +23,10 @@ export class UserService {
     device: string,
     backend: EBackend,
   ): Promise<ResponseDTO> {
+    this.logger.log(
+      `Adding device ${device} for user ${user.email} on ${EBackend[backend]}`,
+    );
+
     return this.backendsOrchestratorService.makeRequest(
       {
         url: '/user/device',
@@ -38,6 +45,10 @@ export class UserService {
     device: string,
     backend: EBackend,
   ): Promise<ResponseDTO> {
+    this.logger.log(
+      `Setting device ${device} for user ${user.email} on ${EBackend[backend]} as verified`,
+    );
+
     return this.backendsOrchestratorService.makeRequest(
       {
         url: '/user/device/verify',
@@ -52,6 +63,8 @@ export class UserService {
   }
 
   find(email: string): Promise<UserEntity> {
+    this.logger.debug(`Searching user ${email}`);
+
     return this.backendsOrchestratorService
       .makeRequest({
         params: { email },

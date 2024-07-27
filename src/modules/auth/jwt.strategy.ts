@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { configDotenv } from 'dotenv';
@@ -13,6 +13,7 @@ expandDotenv(env);
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+  private readonly logger = new Logger(JwtStrategy.name);
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UserService,
@@ -32,6 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!found || (exp && exp < Date.now() / 1000))
       throw new UnauthorizedException();
 
+    this.logger.log(`Validation succeeded for user ${sub}`);
     return found;
   }
 }

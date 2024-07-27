@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { EBackend, ResponseDTO } from '../../common';
-import { AccessTokenResponseDTO } from './dto/access_token_response.dto';
 import { BackendsOrchestratorService } from '../backends-orchestrator/backends_orchestrator.service';
 import { getDeviceIdentifier } from '../../common/utils';
 import { RawAxiosRequestHeaders } from 'axios';
@@ -9,10 +8,11 @@ import { CreateUserDTO } from '../user/dto/create_user.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly backendsOrchestratorService: BackendsOrchestratorService,
   ) {}
-  login(req: Request): Promise<AccessTokenResponseDTO> {
+  login(req: Request): Promise<ResponseDTO> {
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 
@@ -21,6 +21,8 @@ export class AuthService {
     createUserDTO: CreateUserDTO,
     backend: EBackend,
   ): Promise<ResponseDTO> {
+    this.logger.debug(`Register recorded for email ${createUserDTO.email}`);
+
     return this.backendsOrchestratorService.makeRequest(
       {
         url: '/auth/register',
@@ -35,6 +37,8 @@ export class AuthService {
   }
 
   validateMasterPassword(req: Request): Promise<ResponseDTO> {
+    this.logger.debug(`Executed master password validation`);
+
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 }

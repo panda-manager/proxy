@@ -1,4 +1,9 @@
-import { BadRequestException, ImATeapotException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ImATeapotException,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { OTPVerifyDTO } from './dto/otp_verify.dto';
 import { ConfigService } from '@nestjs/config';
@@ -132,7 +137,7 @@ export class OTPService {
 
     await this.sendVerificationEmail(email, otp);
     const message = `OTP generated for user ${user.email}, device ${otpPayload.device}`;
-    this.logger.log(message);
+    this.logger.debug(message);
 
     return { message };
   }
