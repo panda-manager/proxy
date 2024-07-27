@@ -52,10 +52,12 @@ export class UserService {
   }
 
   async find(email: string): Promise<UserEntity> {
-    return await this.backendsOrchestratorService.makeRequest({
-      data: { email },
-      url: '/user/find',
-      method: 'GET',
-    });
+    return await this.backendsOrchestratorService
+      .makeRequest({
+        params: { email },
+        url: '/user/find',
+        method: 'GET',
+      })
+      .then((res) => res.data);
   }
 }
