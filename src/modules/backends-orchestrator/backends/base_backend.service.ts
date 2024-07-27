@@ -14,13 +14,13 @@ export abstract class BaseBackendService {
     protected readonly identifier: EBackend,
   ) {}
 
-  async redirectRequest(req: Request): Promise<any> {
+  redirectRequest(req: Request): Promise<any> {
     const { method, headers, url, body, query, ip } = req;
     const existingXFF = headers['x-forwarded-for'] as string;
 
     const config: AxiosRequestConfig = {
       method,
-      url,
+      url: url.toString().split('?')[0] ?? url,
       data: body,
       params: query,
       headers: {
@@ -39,7 +39,7 @@ export abstract class BaseBackendService {
   protected getBaseUrl(): string {
     return BackendUrl[this.identifier];
   }
-  async makeRequest(config: AxiosRequestConfig): Promise<any> {
+  makeRequest(config: AxiosRequestConfig): Promise<any> {
     config = {
       ...config,
       baseURL: this.getBaseUrl(),

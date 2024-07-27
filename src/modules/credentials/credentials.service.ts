@@ -10,19 +10,19 @@ export class CredentialsService {
     private readonly backendsOrchestratorService: BackendsOrchestratorService,
   ) {}
 
-  async insert(req: Request): Promise<ResponseDTO> {
+  insert(req: Request): Promise<ResponseDTO> {
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 
-  async update(req: Request): Promise<ResponseDTO> {
+  update(req: Request): Promise<ResponseDTO> {
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 
-  async getAppDisplayedCredentials(req: Request): Promise<CredentialsDTO[]> {
+  getAppDisplayedCredentials(req: Request): Promise<CredentialsDTO[]> {
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 
-  async getPassword(req: Request): Promise<string> {
+  getPassword(req: Request): Promise<string> {
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 
@@ -30,11 +30,11 @@ export class CredentialsService {
     return this.backendsOrchestratorService.redirectRequest(req, backend);
   }
 
-  async hasAny(req: Request): Promise<ResponseDTO> {
+  hasAny(req: Request): Promise<ResponseDTO> {
     return this.backendsOrchestratorService.redirectRequest(req);
   }
 
-  async restore(req: Request, backend: EBackend): Promise<ResponseDTO> {
+  restore(req: Request, backend: EBackend): Promise<ResponseDTO> {
     return this.backendsOrchestratorService.redirectRequest(req, backend);
   }
 }

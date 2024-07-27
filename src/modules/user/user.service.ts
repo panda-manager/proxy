@@ -51,8 +51,8 @@ export class UserService {
     );
   }
 
-  async find(email: string): Promise<UserEntity> {
-    return await this.backendsOrchestratorService
+  find(email: string): Promise<UserEntity> {
+    return this.backendsOrchestratorService
       .makeRequest({
         params: { email },
         url: '/user/find',
