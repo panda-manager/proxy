@@ -65,13 +65,11 @@ export class OTPService {
     otp: string,
   ): Promise<void> {
     const transporter = nodemailer.createTransport({
-      host: this.configService.get('OTP_MAIL_ACCOUNT').HOST,
-      port: this.configService.get('OTP_MAIL_ACCOUNT').PORT,
+      service: 'gmail',
       auth: {
         user: this.configService.get('OTP_MAIL_ACCOUNT').USER,
         pass: this.configService.get('OTP_MAIL_ACCOUNT').PASS,
       },
-      name: this.configService.get('OTP_MAIL_ACCOUNT').HOST,
       tls: {
         ciphers: 'SSLv3',
         rejectUnauthorized: false,
@@ -99,13 +97,13 @@ export class OTPService {
   async sendOtp(req: Request, email: string): Promise<ResponseDTO> {
     const device = getDeviceIdentifier(req);
     const user: UserEntity = await this.userService.find(email);
+    const userDevice = user.devices.find(
+      (element) => element.identifier === device,
+    );
 
     if (!user)
       throw new BadRequestException(`No such user with email ${email}`);
-    else if (
-      user.devices.find((element) => element.identifier === device)?.status ===
-      UserStatus.VERIFIED
-    )
+    else if (userDevice.status === UserStatus.VERIFIED)
       throw new ImATeapotException(
         `Device ${device} is already verified for user ${user.email}`,
       );
@@ -126,10 +124,13 @@ export class OTPService {
     };
 
     await this.redisService.insertKey(`otp:${otp}`, otpPayload, OtpTTL);
-    await this.userService.addDevice(user, device, EBackend.AZURE);
-    await this.userService.addDevice(user, device, EBackend.GCP);
-    await this.sendVerificationEmail(email, otp);
 
+    if (!device) {
+      await this.userService.addDevice(user, device, EBackend.AZURE);
+      await this.userService.addDevice(user, device, EBackend.GCP);
+    }
+
+    await this.sendVerificationEmail(email, otp);
     const message = `OTP generated for user ${user.email}, device ${otpPayload.device}`;
     this.logger.log(message);
 

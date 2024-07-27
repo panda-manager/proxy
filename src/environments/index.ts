@@ -19,8 +19,6 @@ export const NODE_ENV = process.env.NODE_ENV;
 export const APP_PORT = parseInt(process.env.APP_PORT || '');
 export const APP_URL = process.env.APP_URL;
 export const OTP_MAIL_ACCOUNT = {
-  HOST: process.env.OTP_MAIL_HOST,
-  PORT: process.env.OTP_MAIL_PORT,
   USER: process.env.OTP_MAIL_USER,
   PASS: process.env.OTP_MAIL_PASSWORD,
 };
