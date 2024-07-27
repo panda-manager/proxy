@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import { BackendUrl, EBackend } from '../../../common';
 import { ConfigService } from '@nestjs/config';
@@ -55,8 +55,9 @@ export abstract class BaseBackendService {
         throwError(
           () =>
             new HttpException(
-              error.response.data,
-              error.response.data.statusCode,
+              error.response?.data || 'Internal server error',
+              error.response?.data.statusCode ||
+                HttpStatus.INTERNAL_SERVER_ERROR,
             ),
         ),
       );
