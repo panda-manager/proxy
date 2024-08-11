@@ -6,6 +6,9 @@ import { JwtStrategy } from './jwt.strategy';
 import { BackendsOrchestratorModule } from '../backends-orchestrator/backends_orchestrator.module';
 import { UserModule } from '../user/user.module';
 import { OTPModule } from '../otp/otp.module';
+import { JwtModule } from '@nestjs/jwt';
+import { ACCESS_TOKEN_SECRET } from '../../environments';
+import authTokenConfig from './config/auth_token_config';
 
 @Module({
   imports: [
@@ -13,6 +16,10 @@ import { OTPModule } from '../otp/otp.module';
     UserModule,
     OTPModule,
     PassportModule.register({ defaultStrategy: 'jwt', session: true }),
+    JwtModule.register({
+      secret: ACCESS_TOKEN_SECRET,
+      signOptions: authTokenConfig,
+    }),
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

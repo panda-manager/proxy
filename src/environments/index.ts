@@ -27,6 +27,7 @@ export const AZURE_BACKEND_URL = process.env.AZURE_BACKEND_URL;
 export const GCP_BACKEND_URL = process.env.GCP_BACKEND_URL;
 
 export const REDIS_URL = process.env.REDIS_URL;
+export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 
 export default () => ({
   CORS_HANDLER,
@@ -37,4 +38,5 @@ export default () => ({
   NODE_ENV,
   AZURE_BACKEND_URL,
   GCP_BACKEND_URL,
+  ACCESS_TOKEN_SECRET,
 });

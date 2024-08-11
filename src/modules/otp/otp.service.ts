@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  forwardRef,
   ImATeapotException,
+  Inject,
   Injectable,
   Logger,
 } from '@nestjs/common';
@@ -12,11 +14,12 @@ import { EBackend, ResponseDTO } from '../../common';
 import { UserEntity } from '../user/entity/user.entity';
 import { BackendsOrchestratorService } from '../backends-orchestrator/backends_orchestrator.service';
 import { getDeviceIdentifier, mailSender } from '../../common/utils';
-import { UserStatus } from '../user/enum/user_status';
+import { DeviceStatus } from '../user/enum/device_status';
 import { generate as generateOtp } from 'otp-generator';
 import { RedisService } from '../../config/redis/redis.service';
 import { OTPSchema, OtpTTL } from '../../config/redis/dto/otp.dto';
 import * as nodemailer from 'nodemailer';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class OTPService {
@@ -26,6 +29,8 @@ export class OTPService {
     private readonly configService: ConfigService,
     private readonly backendsOrchestratorService: BackendsOrchestratorService,
     private readonly redisService: RedisService,
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService,
   ) {}
 
   async verifyOTP(otpVerifyDTO: OTPVerifyDTO): Promise<ResponseDTO> {
@@ -60,9 +65,7 @@ export class OTPService {
     this.logger.debug(`Verified device for user ${otpVerifyDTO.email}`);
     await this.redisService.deleteKey(`otp:${otpVerifyDTO.otp}`);
 
-    return {
-      message: `${foundOTP.device} is now verified for user ${otpVerifyDTO.email}!`,
-    };
+    return this.authService.generateJWT(foundOTP.device, user);
   }
 
   private async sendVerificationEmail(
@@ -108,7 +111,7 @@ export class OTPService {
 
     if (!user)
       throw new BadRequestException(`No such user with email ${email}`);
-    else if (userDevice.status === UserStatus.VERIFIED)
+    else if (userDevice.status === DeviceStatus.VERIFIED)
       throw new ImATeapotException(
         `Device ${device} is already verified for user ${user.email}`,
       );

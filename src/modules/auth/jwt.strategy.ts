@@ -1,4 +1,9 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { configDotenv } from 'dotenv';
@@ -7,13 +12,13 @@ import { expand as expandDotenv } from 'dotenv-expand';
 import { UserEntity } from 'modules/user/entity/user.entity';
 import { JwtPayload } from 'jsonwebtoken';
 import { UserService } from '../user/user.service';
+import { DeviceStatus } from '../user/enum/device_status';
 
 const env = configDotenv();
 expandDotenv(env);
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  private readonly logger = new Logger(JwtStrategy.name);
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UserService,
@@ -27,13 +32,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(
     payload: JwtPayload & { device: string },
   ): Promise<UserEntity> {
-    const { exp, sub } = payload;
-    const found: UserEntity = await this.userService.find(sub);
+    const { exp, sub, device } = payload;
+    const found = await this.userService.find(sub);
 
-    if (!found || (exp && exp < Date.now() / 1000))
-      throw new UnauthorizedException();
+    if (!found) throw new BadRequestException(`No such user with email ${sub}`);
+    else if (exp && exp < Date.now() / 1000)
+      throw new UnauthorizedException('Token expired');
 
-    this.logger.log(`Validation succeeded for user ${sub}`);
+    const deviceDTO = found.devices.find(
+      (element) => element.identifier === device,
+    );
+    if (deviceDTO.status === DeviceStatus.PENDING_VERIFICATION)
+      throw new ForbiddenException('Device is not verified');
+
     return found;
   }
 }
