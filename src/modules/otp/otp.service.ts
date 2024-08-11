@@ -6,9 +6,8 @@ import { Request } from 'express';
 import { EBackend, ResponseDTO } from '../../common';
 import { UserEntity } from '../user/entity/user.entity';
 import { BackendsOrchestratorService } from '../backends-orchestrator/backends_orchestrator.service';
-import { getDeviceIdentifier, mailSender } from '../../common/utils';
+import { generateOtp, getDeviceIdentifier, mailSender } from '../../common/utils';
 import { DeviceStatus } from '../user/enum/device_status';
-import { generate as generateOtp } from 'otp-generator';
 import { RedisService } from '../../config/redis/redis.service';
 import { OTPSchema, OtpTTL } from '../../config/redis/dto/otp.dto';
 import * as nodemailer from 'nodemailer';
@@ -109,11 +108,11 @@ export class OTPService {
         `Device ${device} is already verified for user ${user.email}`,
       );
 
-    let otp = generateOtp(6);
+    let otp = generateOtp();
     let result = await this.redisService.keyExists(`otp:${otp}`);
 
     while (result) {
-      otp = generateOtp(6);
+      otp = generateOtp();
       result = await this.redisService.keyExists(`otp:${otp}`);
     }
 
@@ -126,7 +125,7 @@ export class OTPService {
 
     await this.redisService.insertKey(`otp:${otp}`, otpPayload, OtpTTL);
 
-    if (!device) {
+    if (!userDevice) {
       await this.userService.addDevice(user, device, EBackend.AZURE);
       await this.userService.addDevice(user, device, EBackend.GCP);
     }
