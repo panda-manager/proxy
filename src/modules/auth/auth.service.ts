@@ -22,7 +22,6 @@ export class AuthService {
   async login(req: Request, loginDTO: BasicAuthLoginDTO): Promise<UserEntity> {
     this.logger.log(`Login attempted for user ${loginDTO.email}`);
 
-    console.log(getDeviceIdentifier(req));
     const user = await this.backendsOrchestratorService
       .makeRequest({
         url: '/auth/login',
