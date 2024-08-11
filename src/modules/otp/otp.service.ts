@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  forwardRef,
-  ImATeapotException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { BadRequestException, forwardRef, ImATeapotException, Inject, Injectable, Logger } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { OTPVerifyDTO } from './dto/otp_verify.dto';
 import { ConfigService } from '@nestjs/config';
@@ -111,7 +104,7 @@ export class OTPService {
 
     if (!user)
       throw new BadRequestException(`No such user with email ${email}`);
-    else if (userDevice.status === DeviceStatus.VERIFIED)
+    else if (userDevice && userDevice.status === DeviceStatus.VERIFIED)
       throw new ImATeapotException(
         `Device ${device} is already verified for user ${user.email}`,
       );
