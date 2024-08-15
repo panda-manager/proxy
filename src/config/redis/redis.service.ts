@@ -21,8 +21,10 @@ export class RedisService {
     this.logger.debug(`Checking if key ${key} exists`);
     const value = await this.redisClient.get(key);
 
-    this.logger.debug(`Key ${key} found`);
-    if (!value) return null;
+    if (!value) {
+      this.logger.debug(`Key ${key} found`);
+      return null;
+    }
 
     this.logger.debug(`Key ${key} not found`);
     return JSON.parse(value);
