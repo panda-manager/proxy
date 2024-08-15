@@ -85,6 +85,10 @@ export class BackendsOrchestratorService {
   makeRequest(config: AxiosRequestConfig, backend?: EBackend): Promise<any> {
     if (!backend) backend = Math.random() < 0.5 ? EBackend.AZURE : EBackend.GCP;
 
+    this.logger.debug(
+      `Making request ${config.method} ${config.url} to ${EBackend[backend]}`,
+    );
+
     switch (backend) {
       case EBackend.AZURE:
         return this.requestAzure(config);

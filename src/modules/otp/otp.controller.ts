@@ -41,22 +41,9 @@ export class OTPController {
   async verifyOTP(
     @Query('email') email: string,
     @Query('otp') otp: string,
-  ): Promise<string> {
+  ): Promise<ResponseDTO> {
     const otpVerifyDTO: OTPVerifyDTO = { email, otp };
-    const responseDTO: ResponseDTO =
-      await this.otpService.verifyOTP(otpVerifyDTO);
-
-    return `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <title>Sample HTML Page</title>
-      </head>
-      <body>
-        <h2>${responseDTO.message}</h2>
-      </body>
-      </html>
-    `;
+    return await this.otpService.verifyOTP(otpVerifyDTO);
   }
 
   @ApiOkResponse({

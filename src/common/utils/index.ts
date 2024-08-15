@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { Transporter } from 'nodemailer';
+import { generate } from 'otp-generator';
 
 const retainLastOctet = (ip: string): string => {
   if (!ip) return '';
@@ -21,6 +22,14 @@ export const getDeviceIdentifier = (req: Request): string => {
     return retainLastOctet(headers['x-forwarded-for'].toString().split(',')[0]);
 
   return retainLastOctet(ips[0] ?? ip);
+};
+
+export const generateOtp = () => {
+  return generate(6, {
+    specialChars: false,
+    upperCaseAlphabets: false,
+    lowerCaseAlphabets: false,
+  });
 };
 
 export const mailSender = (

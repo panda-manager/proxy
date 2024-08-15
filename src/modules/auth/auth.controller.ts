@@ -1,25 +1,13 @@
 import { AuthService } from './auth.service';
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-} from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { EBackend, ResponseDTO } from '../../common';
-import { JwtGuard } from './jwt.guard';
 import { CreateUserDTO } from '../user/dto/create_user.dto';
 import { OTPService } from '../otp/otp.service';
 import { UserService } from '../user/user.service';
+import { BasicAuthLoginDTO } from './dto/basic_auth_login.dto';
+import { getDeviceIdentifier } from '../../common/utils';
 
 @Controller('auth')
 export class AuthController {
@@ -34,8 +22,12 @@ export class AuthController {
   })
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  login(@Req() req: Request): Promise<ResponseDTO> {
-    return this.authService.login(req);
+  async login(
+    @Req() req: Request,
+    @Body() loginDTO: BasicAuthLoginDTO,
+  ): Promise<ResponseDTO> {
+    const user = await this.authService.login(req, loginDTO);
+    return this.authService.generateJWT(getDeviceIdentifier(req), user);
   }
 
   @ApiCreatedResponse({
@@ -64,18 +56,5 @@ export class AuthController {
     return {
       message: `Account created, OTP sent to ${createUserDTO.email}`,
     };
-  }
-
-  // TODO: Delete
-  @ApiOkResponse({
-    description: 'User master password validation',
-    type: ResponseDTO,
-  })
-  @ApiBearerAuth()
-  @UseGuards(JwtGuard)
-  @HttpCode(HttpStatus.OK)
-  @Post('/validate/master')
-  validateMasterPassword(@Req() req: Request): Promise<ResponseDTO> {
-    return this.authService.validateMasterPassword(req);
   }
 }
