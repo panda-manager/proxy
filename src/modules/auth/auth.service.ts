@@ -33,8 +33,10 @@ export class AuthService {
       })
       .then((r) => r.data);
 
-    if (!user)
+    if (!user) {
+      this.logger.debug(`Invalid credentials for user ${loginDTO.email}`);
       throw new UnauthorizedException('Username or password are incorrect');
+    }
 
     const requestDevice = user.devices.find(
       (item) => item.identifier === getDeviceIdentifier(req),
@@ -45,6 +47,11 @@ export class AuthService {
       requestDevice.status === DeviceStatus.PENDING_VERIFICATION
     ) {
       await this.otpService.sendOtp(req, loginDTO.email);
+
+      this.logger.debug(
+        `Device ${getDeviceIdentifier(req)} not verified for user ${user.email}, OTP sent`,
+      );
+
       throw new ForbiddenException(
         `Requested device is not a trusted device, OTP sent to ${loginDTO.email}`,
       );

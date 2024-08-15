@@ -56,11 +56,6 @@ export class BackendsOrchestratorService {
 
     try {
       const handler: BaseBackendService = this.concludeHandler(backend);
-
-      this.logger.log(
-        `Redirecting ${method} ${url} to ${EBackend[handler.which()]}`,
-      );
-
       const res = handler.redirectRequest(req);
 
       if (!found && pairRedisKey)
