@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { RevertSchema } from './dto/revert.dto';
 import { Seconds } from '../../common';
@@ -6,7 +6,12 @@ import { OTPSchema } from './dto/otp.dto';
 
 @Injectable()
 export class RedisService {
-  constructor(@Inject('REDIS_CLIENT') private readonly redisClient: Redis) {}
+  private readonly logger = new Logger(RedisService.name);
+  constructor(@Inject('REDIS_CLIENT') private readonly redisClient: Redis) {
+    redisClient.on('error', (error) => {
+      this.logger.log(error);
+    });
+  }
 
   keyExists(key: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
