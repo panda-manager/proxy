@@ -13,16 +13,18 @@ export class RedisService {
     });
   }
 
-  keyExists(key: string): Promise<boolean> {
-    return new Promise<boolean>((resolve, reject) => {
-      this.redisClient.exists(key).then((result: number) => {
-        resolve(result === 1);
-      }, reject);
-    });
+  async keyExists(key: string): Promise<boolean> {
+    return !!(await this.getKey(key));
   }
 
   async getKey(key: string): Promise<any> {
+    this.logger.debug(`Checking if key ${key} exists`);
     const value = await this.redisClient.get(key);
+
+    this.logger.debug(`Key ${key} found`);
+    if (!value) return null;
+
+    this.logger.debug(`Key ${key} not found`);
     return JSON.parse(value);
   }
 
@@ -33,6 +35,7 @@ export class RedisService {
   ) {
     const serializedValue = JSON.stringify(value);
 
+    this.logger.debug(`Inserting [${key}]: ${serializedValue}`);
     const res = this.redisClient.set(key, serializedValue);
     await this.redisClient.expire(key, expire);
 
@@ -40,8 +43,11 @@ export class RedisService {
   }
 
   deleteKey(key: string): Promise<number> {
+    this.logger.debug(`Attempting deletion for key ${key}`);
+
     return new Promise<number>((resolve, reject) => {
       this.redisClient.del(key).then((result: number) => {
+        this.logger.debug(`Key ${key} deleted`);
         resolve(result);
       }, reject);
     });
