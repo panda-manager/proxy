@@ -44,14 +44,18 @@ export class RedisService {
     return res;
   }
 
-  deleteKey(key: string): Promise<number> {
+  async deleteKey(key: string): Promise<number> {
     this.logger.debug(`Attempting deletion for key ${key}`);
 
-    return new Promise<number>((resolve, reject) => {
-      this.redisClient.del(key).then((result: number) => {
-        this.logger.debug(`Key ${key} deleted`);
-        resolve(result);
-      }, reject);
-    });
+    if (await this.keyExists(key)) {
+      return new Promise<number>((resolve, reject) => {
+        this.redisClient.del(key).then((result: number) => {
+          this.logger.debug(`Key ${key} deleted`);
+          resolve(result);
+        }, reject);
+      });
+    }
+
+    this.logger.debug(`Key ${key} was not deleted as it does not exist`);
   }
 }
